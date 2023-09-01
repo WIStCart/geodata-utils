@@ -1,2 +1,3 @@
-# geodata-utils
- Utilites for managing GeoData@Wisconsin.
+# GeoData Utilities
+
+Utilities for managing GeoData@Wisconsin.
