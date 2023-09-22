@@ -1,0 +1,9 @@
+*.pyc
+
+# Secrets in environment
+env/.env
+
+# Development mode files
+GeoData_Utils*/*
+
+temp/*
