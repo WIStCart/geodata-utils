@@ -1,7 +1,8 @@
 *.pyc
+*.log
 
 # Secrets in environment
-env/.env
+*.env
 
 # Development mode files
 GeoData_Utils*/*
