@@ -2,7 +2,7 @@ version: 1
 disable_existing_loggers: true
 formatters:
   default:
-    format: "%(asctime)s [%(levelname)s] %(message)s"
+    format: "%(asctime)s [%(levelname)s]%(indent)s%(message)s"
   simple:
     format: "[%(levelname)s] %(message)s"
 handlers:
@@ -16,8 +16,7 @@ handlers:
     level: DEBUG
     formatter: default
     filename: geodatautils.log
-    mode: w
-loggers:
-  root:
-    level: DEBUG
-    handlers: [console,file]
+    mode: w 
+root:
+    level: INFO
+    handlers: [console, file]

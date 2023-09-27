@@ -29,3 +29,8 @@ def open_json(file_path):
 
     with open(file_path) as f:
         return json.load(f)
+    
+class logFormat:
+    def indent(level, tree=False):
+        return "\t"*level*2 + ("└── " if tree else "")
+    

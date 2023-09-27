@@ -1,5 +1,6 @@
 import geodatautils
 import argparse
+import logging
 
 def update_solr():
 
@@ -22,6 +23,9 @@ def update_solr():
 
     # Parse arguments
     args = parser.parse_args()
+
+    # Set logger name
+    logging.getLogger().setLevel(logging.DEBUG)
 
     # Run update
     geodatautils.manage.update(args.inPath)
