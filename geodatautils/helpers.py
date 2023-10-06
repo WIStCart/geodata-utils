@@ -60,18 +60,22 @@ class Solr:
         # connection = pysolr.Solr(solr_instance_config['url'], timeout=1800, auth=HTTPBasicAuth(SOLR_USERNAME, SOLR_PASSWORD))
         pass
 
-    def select(self):
+    def select(self, q='', fl=''):
         import requests  # I chose requests over urllib because although it adds another dependency, it greatly simplifies working with solr
         from requests.compat import urljoin
 
         select_url = urljoin(self.url, 'select/')
+
         parameters = [
-            ('q', 'Residential Care')
+            ('q', q),
+            ('fl', fl)
         ]
         
-        response = requests.get(select_url, params=parameters, auth=(self.username, self.password))
+        raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password)).json()
 
-        print(response)
+        return raw_response
+
+        
 
         # enocde for URL format
         # encoded_solr_tuples = urllib.parse.urlencode(solr_tuples)
