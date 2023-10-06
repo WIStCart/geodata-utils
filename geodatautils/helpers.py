@@ -47,8 +47,6 @@ def open_json(file_path:str) -> dict:
         return json.load(f)
 
 class Solr:
-    # import pysolr
-    
 
     def __init__(self, instance_name) -> None:
 
@@ -75,19 +73,7 @@ class Solr:
 
         return raw_response
 
-        
 
-        # enocde for URL format
-        # encoded_solr_tuples = urllib.parse.urlencode(solr_tuples)
-        # complete_url = solr_url + encoded_solr_tuples
-        # connection = urlopen(complete_url)
-        # raw_response = simplejson.load(connection)
-        
-    
-# import pysolr
-# url  = 'https://geodata-dev.shc.wisc.edu/solr/geodata-core/'
-# solr = pysolr.Solr(url, always_commit=True, timeout=10, [auth=<type of authentication>])
-    
 class LogFormat:
     """
     Helper class to format log entries.
