@@ -1,0 +1,40 @@
+version: 1
+
+solr instances:
+  geodata-dev:
+    url: "https://geodata-dev.shc.wisc.edu/solr/geodata-core/"
+    username: "yourusername"
+    password: "yourpassword"
+  geodata-test:
+    url: "https://geodata-test.sco.wisc.edu/solr/geodata-core/"
+    username: "yourusername"
+    password: "yourpassword"
+  geodata-prod:
+    url: "https://geodata.wisc.edu/solr/geodata-core/"
+    username: "yourusername"
+    password: "yourpassword"
+
+log:
+  version: 1
+  disable_existing_loggers: true
+  formatters:
+    default:
+      format: "%(asctime)s [%(levelname)s]%(indent)s%(message)s"
+    simple:
+      format: "[%(levelname)s] %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: WARNING
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.FileHandler
+      level: DEBUG
+      formatter: default
+      filename: geodatautils.log
+      mode: w 
+  root:
+      level: INFO
+      handlers: [console, file]
+

@@ -1,21 +1,24 @@
-from . import manage
+# from . import manage
+import os
 import logging
 import logging.config
 import yaml
+
 
 # Metadata
 __version__ = "0.1"
 __author__ = "Hayden Elza"
 __license__ = "GPL-3"
 
-# Load environment
-from dotenv import load_dotenv
-load_dotenv()
 
-from os import getenv
-# version = getenv('VERSION')
+# Config
+dirname = os.path.dirname(__file__)
+with open(os.path.join(dirname, '../config/config.yml'), 'r') as f:
 
-# Logging
-with open('config/logging.yml', 'r') as f:
+    # Read in config
     config = yaml.safe_load(f.read())
-    logging.config.dictConfig(config)
+
+    # Config logging
+    logging.config.dictConfig(config['log'])
+
+    
