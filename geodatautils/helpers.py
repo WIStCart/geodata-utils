@@ -1,12 +1,10 @@
-"""
-Helpers
+"""Helpers
 
 These are small bits of code that are common to many modules.
 """
 
 def create_file_list(in_path:str) -> list:
-    """
-    Given a path that could be a file or directory, return a list of all 
+    """Given a path that could be a file or directory, return a list of all 
     possible JSON file paths. 
     
     If the in path is a JSON file, this is a list with a single item. If the 
@@ -37,9 +35,7 @@ def create_file_list(in_path:str) -> list:
         raise SystemExit
 
 def open_json(file_path:str) -> dict:
-    """
-    Given a file path to a JSON file, return the JSON loaded into a dictionary.
-    """
+    """Given a file path to a JSON file, return the JSON loaded into a dictionary."""
 
     import json
 
@@ -47,8 +43,6 @@ def open_json(file_path:str) -> dict:
         return json.load(f)
 
 class LogFormat:
-    """
-    Helper class to format log entries.
-    """
+    """ Helper class to format log entries."""
     def indent(level, tree=False):
         return "\t"*level*2 + ("└── " if tree else "")
