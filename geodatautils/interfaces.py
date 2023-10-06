@@ -1,11 +1,10 @@
-import geodatautils
+import geodatautils.manage
 import argparse
 import logging
 
 def update_solr():
 
     # Create argument parser
-    
     parser = argparse.ArgumentParser()
 
     # Mandatory argument
@@ -28,4 +27,4 @@ def update_solr():
     logging.getLogger().setLevel(logging.DEBUG)
 
     # Run update
-    geodatautils.manage.update(args.inPath)
+    geodatautils.manage.update(args.inPath, solr_instance='geodata-dev')

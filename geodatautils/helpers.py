@@ -1,6 +1,18 @@
-# Helpers
+"""
+Helpers
+"""
 
-def create_file_list(in_path):
+
+
+def create_file_list(in_path:str) -> list:
+    """
+    Given a path that could be a file or directory, return a list of all 
+    possible JSON file paths. 
+    
+    If the in path is a JSON file, this is a list with a single item. If the 
+    in path is a directory, the list is every JSON file within the directory 
+    including within subdirectories.
+    """
 
     import os
     import logging
@@ -24,13 +36,57 @@ def create_file_list(in_path):
         logging.error("'{}' is not a file or directory", in_path)
         raise SystemExit
     
-def open_json(file_path):
+def open_json(file_path:str) -> dict:
+    """
+    Given a file path to a JSON file, return the JSON loaded into a dictionary.
+    """
+
     import json
 
     with open(file_path) as f:
         return json.load(f)
+
+class Solr:
+    # import pysolr
     
-class logFormat:
+
+    def __init__(self, instance_name) -> None:
+
+        from geodatautils import config
+        self.url = config['solr instances'][instance_name]['url']
+        self.username = config['solr instances'][instance_name]['username']
+        self.password = config['solr instances'][instance_name]['password']
+        
+        # connection = pysolr.Solr(solr_instance_config['url'], timeout=1800, auth=HTTPBasicAuth(SOLR_USERNAME, SOLR_PASSWORD))
+        pass
+
+    def select(self):
+        import requests  # I chose requests over urllib because although it adds another dependency, it greatly simplifies working with solr
+        from requests.compat import urljoin
+
+        select_url = urljoin(self.url, 'select/')
+        parameters = [
+            ('q', 'Residential Care')
+        ]
+        
+        response = requests.get(select_url, params=parameters, auth=(self.username, self.password))
+
+        print(response)
+
+        # enocde for URL format
+        # encoded_solr_tuples = urllib.parse.urlencode(solr_tuples)
+        # complete_url = solr_url + encoded_solr_tuples
+        # connection = urlopen(complete_url)
+        # raw_response = simplejson.load(connection)
+        
+    
+# import pysolr
+# url  = 'https://geodata-dev.shc.wisc.edu/solr/geodata-core/'
+# solr = pysolr.Solr(url, always_commit=True, timeout=10, [auth=<type of authentication>])
+    
+class LogFormat:
+    """
+    Helper class to format log entries.
+    """
     def indent(level, tree=False):
         return "\t"*level*2 + ("└── " if tree else "")
-    
