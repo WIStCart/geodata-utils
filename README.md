@@ -18,6 +18,9 @@ Change to this directory and run:
 python setup.py install
 ```
 
+### Configure Settings
+
+Using `config/config-template.yml` as a starting point, edit the 'solr instances' to fit your needs and save as `config/config.yml`.
 
 ## Development Mode
 
