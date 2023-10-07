@@ -1,4 +1,5 @@
 from .helpers import create_file_list, open_json, LogFormat
+from .solr import Solr
 import logging
 import re
 
@@ -39,9 +40,12 @@ def error_check(data):
         errors = True
 
     # Check that solr_year_i is in dct_references_s['http://schema.org/downloadUrl\']
-    if str(data['solr_year_i']) not in re.search('(?<=downloadUrl\\":\\")(?:.*?)([^\/]+(?=\\",))', data['dct_references_s']).group(1):
+    regex = '(?<=downloadUrl":").+?([^\/]+?)(?=")'
+    matches = re.findall(regex, data['dct_references_s'])
+
+    if not any(str(data['solr_year_i']) in match for match in matches):
         logging.error("""'dct_references_s["http://schema.org/downloadUrl"]' does not contain 'solr_year_i'""", extra={'indent': LogFormat.indent(2, True)})
-        logging.debug("'{}', '{}'".format(re.search('(?<=downloadUrl\\":\\")(?:.*?)([^\/]+(?=\\",))', data['dct_references_s']).group(1), data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
+        logging.debug("{}, '{}'".format(matches, data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
         errors = True
 
     # Check for existing UID (`dc_identifier_s`) in current Solr index
@@ -63,6 +67,8 @@ def update(in_path, solr_instance):
     # Get list of geoblacklight json files to process
     file_list = create_file_list(in_path)
 
+    logging.info("Checking {} documents in {}.".format(len(file_list), in_path), extra={'indent': LogFormat.indent(0)})
+
     # For each file
     for file_name in file_list:
 
@@ -76,5 +82,15 @@ def update(in_path, solr_instance):
         errors = error_check(data) or errors
 
         # break
+    
+    # If no errors
+    if not errors:
 
-    print("Upload?", not errors)
+        logging.info("Uploading {} documents to {}.".format(len(file_list), solr_instance), extra={'indent': LogFormat.indent(0)})
+        
+        for file_name in file_list:
+            logging.info(file_name, extra={'indent': LogFormat.indent(1)})
+
+
+    else: 
+        print("Exit with errors; check log.")
