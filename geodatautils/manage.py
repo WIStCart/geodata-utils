@@ -67,7 +67,7 @@ def update(in_path, solr_instance):
     # Get list of geoblacklight json files to process
     file_list = create_file_list(in_path)
 
-    logging.info("Checking {} documents in {}.".format(len(file_list), in_path), extra={'indent': LogFormat.indent(0)})
+    logging.info("Checking {} documents in {}.".format(len(file_list), in_path), extra={'indent': LogFormat.spaces(1)})
 
     # For each file
     for file_name in file_list:
@@ -86,7 +86,7 @@ def update(in_path, solr_instance):
     # If no errors
     if not errors:
 
-        logging.info("Uploading {} documents to {}.".format(len(file_list), solr_instance), extra={'indent': LogFormat.indent(0)})
+        logging.info("Uploading {} documents to {}.".format(len(file_list), solr_instance), extra={'indent': LogFormat.spaces(1)})
         
         for file_name in file_list:
             logging.info(file_name, extra={'indent': LogFormat.indent(1)})
