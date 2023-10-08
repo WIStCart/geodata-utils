@@ -1,5 +1,6 @@
 from .helpers import create_file_list, open_json, LogFormat
 from .solr import Solr
+from . import schema
 import logging
 import re
 
@@ -74,6 +75,9 @@ def update(in_path, solr_instance):
 
         # Open the file
         data = open_json(file_name)
+
+        # Validate schema
+        schema.validate(data, 'geoblacklight-1')
 
         # Check for errors
         errors = error_check(data) or errors

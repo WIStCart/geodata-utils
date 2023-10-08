@@ -7,7 +7,7 @@ setup(
     author='Hayden Elza',
     license='GPLv3',
     packages=find_packages(where='geodatautils'),
-    install_requires=['pyyaml','requests'],
+    install_requires=['pyyaml','requests','jsonschema'],
     entry_points={
         'console_scripts': [
             'update_solr=geodatautils.interfaces:update_solr',
