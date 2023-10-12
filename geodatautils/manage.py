@@ -26,8 +26,7 @@ def error_check(data):
         errors = True
 
     # Check that dct_temporal_sm contains solr_year_i
-    # TODO: check if solr_year_i in any dct_temporal_sm
-    if str(data['solr_year_i']) not in data['dct_temporal_sm'][0]:
+    if not any(str(data['solr_year_i']) in item for item in data['dct_temporal_sm']):
         logging.error("'dct_temporal_sm' does not contain 'solr_year_i'", extra={'indent': LogFormat.indent(2, True)})
         logging.debug("'{}', '{}'".format(data['dct_temporal_sm'], data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
         errors = True
