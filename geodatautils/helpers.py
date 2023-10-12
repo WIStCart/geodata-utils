@@ -41,14 +41,3 @@ def open_json(file_path:str) -> dict:
 
     with open(file_path) as f:
         return json.load(f)
-
-class LogFormat:
-    """Helper class to format log entries."""
-
-    def indent(level, tree=False):
-        """Indent with tabs with the option of a tree prefix."""
-        return "\t"*level*2 + ("└── " if tree else "")
-    
-    def spaces(n):
-        """Generate a specified number of spaces."""
-        return " "*n
