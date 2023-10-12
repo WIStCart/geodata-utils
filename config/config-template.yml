@@ -17,6 +17,9 @@ solr instances:
 log:
   version: 1
   disable_existing_loggers: true
+  filters:
+    indent:
+      (): "geodatautils.logging_config.DefaultIndent"
   formatters:
     default:
       format: "%(asctime)s [%(levelname)s]%(indent)s%(message)s"
@@ -32,9 +35,18 @@ log:
       class: logging.FileHandler
       level: DEBUG
       formatter: default
+      filters: [indent]
       filename: geodatautils.log
       mode: w 
+  loggers:
+    urllib3:
+      handlers: [console]
+      propagate: no
   root:
       level: INFO
       handlers: [console, file]
 
+metadata-schemas:
+  geoblacklight-aardvark: config/schemas/geoblacklight-schema-aardvark.json
+  geoblacklight-1: config/schemas/geoblacklight-schema-1.0.json
+  geoblacklight-1-no_enum: config/schemas/geoblacklight-schema-1.0-no_enum.json
