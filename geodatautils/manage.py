@@ -77,7 +77,7 @@ def update(in_path, solr_instance):
         data = open_json(file_name)
 
         # Validate schema
-        schema.validate(data, 'geoblacklight-1')
+        schema.validate(data, 'geoblacklight-1-no_enum')
 
         # Check for errors
         errors = error_check(data) or errors
