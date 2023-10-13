@@ -3,6 +3,13 @@
 These are small bits of code that are common to many modules.
 """
 
+
+import os
+import logging
+import glob
+import json
+
+
 def create_file_list(in_path:str) -> list:
     """Given a path that could be a file or directory, return a list of all 
     possible JSON file paths. 
@@ -11,10 +18,6 @@ def create_file_list(in_path:str) -> list:
     in path is a directory, the list is every JSON file within the directory 
     including within subdirectories.
     """
-
-    import os
-    import logging
-    import glob
 
     # Check if path exists; if not, exit
     if not os.path.exists(in_path):
@@ -34,10 +37,9 @@ def create_file_list(in_path:str) -> list:
         logging.error("'{}' is not a file or directory", in_path)
         raise SystemExit
 
+
 def open_json(file_path:str) -> dict:
     """Given a file path to a JSON file, return the JSON loaded into a dictionary."""
-
-    import json
 
     with open(file_path) as f:
         return json.load(f)

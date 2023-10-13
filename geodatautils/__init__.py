@@ -1,14 +1,19 @@
-# from . import manage
-import os
-import logging
-import logging.config
-import yaml
+"""Geodata Utilities
+
+A set of utilities to manage the Wisconsin Geodata Geoblacklight instance.
+"""
 
 
-# Metadata
 __version__ = "0.1"
 __author__ = "Hayden Elza"
 __license__ = "GPL-3"
+
+
+import os
+import logging
+import logging.config
+
+import yaml
 
 
 # Read in Config

@@ -6,11 +6,14 @@ geoblacklight.
 
 import logging
 
-def validate(data:dict, schema_name:str) -> bool:
+from jsonschema import validate, ValidationError
 
-    from geodatautils import config
-    from .helpers import open_json
-    from jsonschema import validate, ValidationError
+from geodatautils import config
+from .helpers import open_json
+
+
+def validate(data:dict, schema_name:str) -> bool:
+    """Validate GeoBlacklight JSON schema."""
 
     # Load schema from config
     schema_path = config['metadata-schemas'][schema_name]

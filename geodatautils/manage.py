@@ -1,14 +1,23 @@
-from .helpers import create_file_list, open_json
-from .solr import Solr
-from . import schema
-import logging
-from .logging_config import LogFormat
-import re
+"""Manage Solr Instance
+
+Manage Solr instance by updating the index.
+"""
+
 
 __version__ = 1.0
 
 
-def error_check(data, solr):
+import logging
+import re
+
+from .helpers import create_file_list, open_json
+from .logging_config import LogFormat
+from .solr import Solr
+from . import schema
+
+
+def _error_check(data, solr):
+    """Check for errors in a GeoBlacklight JSON file."""
 
     # Initialize error tracker
     errors = False
@@ -59,6 +68,7 @@ def error_check(data, solr):
     
 
 def update(in_path, solr_instance_name):
+    """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
@@ -84,7 +94,7 @@ def update(in_path, solr_instance_name):
         schema.validate(data, 'geoblacklight-1-no_enum')
 
         # Check for errors
-        errors = error_check(data, solr) or errors
+        errors = _error_check(data, solr) or errors
     
     # If no errors
     if not errors:

@@ -1,8 +1,20 @@
-import geodatautils.manage
+"""Geodata Utility Interfaces
+
+Command line interfaces for Geodata utilites.
+"""
+
+
 import argparse
 import logging
 
+import geodatautils.manage
+
+
 def update_solr():
+    """Update Solr
+    
+    Update a solr instance. Add records, remove records.
+    """
 
     # Create argument parser
     parser = argparse.ArgumentParser()

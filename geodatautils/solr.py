@@ -3,9 +3,12 @@
 Connect to a Solr instance so that you can select or update documents.
 """
 
-from geodatautils import config
+
 import requests  # I chose requests over urllib because although it adds another dependency, it greatly simplifies working with solr
 from requests.compat import urljoin
+
+from geodatautils import config
+
 
 class Solr:
     """Create an object representing a connection to a Solr instance."""
