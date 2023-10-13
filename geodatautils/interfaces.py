@@ -27,4 +27,4 @@ def update_solr():
     logging.getLogger().setLevel(logging.DEBUG)
 
     # Run update
-    geodatautils.manage.update(args.inPath, solr_instance='geodata-dev')
+    geodatautils.manage.update(args.inPath, solr_instance_name='geodata-test')

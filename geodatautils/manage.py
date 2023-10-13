@@ -8,7 +8,7 @@ import re
 __version__ = 1.0
 
 
-def error_check(data):
+def error_check(data, solr):
 
     # Initialize error tracker
     errors = False
@@ -48,19 +48,23 @@ def error_check(data):
         errors = True
 
     # Check for existing UID (`dc_identifier_s`) in current Solr index
-
-
-
-
-    
+    raw_response = solr.select(q=data['dc_identifier_s'])
+    records_found = raw_response['response']['numFound']
+    if records_found > 0:
+        logging.error("""'dc_identifier_s' already exists in the Solr index.""", extra={'indent': LogFormat.indent(2, True)})
+        logging.debug("{} records found for '{}'".format(records_found, data['dc_identifier_s']), extra={'indent': LogFormat.indent(3)})
+        errors = True
 
     return errors
     
 
-def update(in_path, solr_instance):
+def update(in_path, solr_instance_name):
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
+
+    # Initialize solr instance
+    solr = Solr(solr_instance_name)
 
     # Get list of geoblacklight json files to process
     file_list = create_file_list(in_path)
@@ -80,18 +84,27 @@ def update(in_path, solr_instance):
         schema.validate(data, 'geoblacklight-1-no_enum')
 
         # Check for errors
-        errors = error_check(data) or errors
-
-        # break
+        errors = error_check(data, solr) or errors
     
     # If no errors
     if not errors:
 
         logging.info("Uploading {} documents to {}.".format(len(file_list), solr_instance_name))
         
+        # For each file
         for file_name in file_list:
+            """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
+            structure. However, it allows us to minimize the risk of using too much memory while
+            also checking all datasets before uploading."""
+
+            # Log the file path
             logging.info(file_name, extra={'indent': LogFormat.indent(1)})
 
+            # Open the file
+            data = open_json(file_name)
+
+            # Update solr index
+            solr.update([data])
 
     else: 
-        print("Exited with errors; check log.")
+        logging.warning("Exited with errors; check log.")
