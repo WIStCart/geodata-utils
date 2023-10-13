@@ -4,8 +4,6 @@ See https://opengeometadata.org/ for helpful information on the schemas used in
 geoblacklight.
 """
 
-import logging
-
 from jsonschema import validate as jsonschemavalidate
 
 from geodatautils import config
