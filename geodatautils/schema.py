@@ -6,7 +6,7 @@ geoblacklight.
 
 import logging
 
-from jsonschema import validate, ValidationError
+from jsonschema import validate as jsonschemavalidate
 
 from geodatautils import config
 from .helpers import open_json
@@ -20,4 +20,4 @@ def validate(data:dict, schema_name:str) -> bool:
     schema = open_json(schema_path)
 
     # Compare data to schema
-    validate(instance=data, schema=schema)
+    jsonschemavalidate(instance=data, schema=schema)
