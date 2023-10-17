@@ -62,7 +62,20 @@ def add(in_path, solr_instance_name):
             data = open_json(file_name)
 
             # Update solr index
-            solr.update([data])
+            solr.update(str([data]))
 
     else: 
         logging.warning("Exited with errors; check log.")
+
+def delete(solr_instance_name:str, query:str) -> None:
+    """Delete records from Solr instance based on query."""
+
+    # Initialize solr instance
+    solr = Solr(solr_instance_name)
+
+    # logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
+    
+    raw_response = solr.delete(q=query)
+    print(raw_response)
+
+    return

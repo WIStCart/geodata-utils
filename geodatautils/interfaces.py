@@ -63,9 +63,11 @@ def update_solr():
     logging.getLogger().setLevel(logging.DEBUG)
 
     # Run tools
-    if any([args.delete, args.delete_collection, args.delete_provenance, args.purge]):
-        print("Not implemented yet. Exiting.")
-    elif args.addFolder:
+    if args.addFolder:
         geodatautils.manage.add(args.addFolder, solr_instance_name=args.instance)
+    elif args.purge:
+        geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*")
+    elif any([args.delete, args.delete_collection, args.delete_provenance]):
+        print("Not implemented yet. Exiting.")
     else:  # This shouldn't happen
         print("No tool selected")
