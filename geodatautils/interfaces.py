@@ -8,6 +8,7 @@ import argparse
 import logging
 
 import geodatautils.manage
+from geodatautils import config
 
 
 def update_solr():
@@ -19,15 +20,38 @@ def update_solr():
     # Create argument parser
     parser = argparse.ArgumentParser()
 
-    # Mandatory argument
-    parser.add_argument("inPath", help="Path to geoblacklight JSON or directory of JSONs.")
-    # parser.add_argument("outPath", help="Output path to place updated geojsons.")
+    # Required arguments
+    instance_choices = list(config['solr instances'].keys())
+    parser.add_argument(
+        "-i", "--instance",
+        choices = instance_choices,
+        help="Identify which instance of Solr to use.",
+        required=True)
 
-    # Optional arguments
-    # parser.add_argument("-p", "--precision", help="How many digits after the decimial (default=4)", dest='precision', type=int, default=4)
-    # parser.add_argument("-i", "--indent", help="Indent level. (default=None)", dest='indentation', type=int, default=None)
-    # parser.add_argument("-s", "--skip-feature", help="Gracefully skip feature instead of entire dataset if there is an unsupported geometry type.", dest='skip_feature', action='store_true')
-    # parser.add_argument("-v", "--verbose", help="Write successful precision changes to log as well.", dest='verbose', action='store_true')
+    # Required exclusive group (one and only one from group)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "-a", "--addFolder",
+        help="Indicate path to folder with GeoBlacklight JSON files that will be uploaded.")
+    group.add_argument(
+        "-d", "--delete",
+        help="Delete the provided unique record ID (layer_slug) from the Solr index.")
+    group.add_argument(
+        "-dc", "--delete-collection",
+        help="Remove an entire collection from the Solr index.")
+    group.add_argument(
+        "-dp", "--delete-provenance",
+        help="Remove all records from Solr index that belong to the specified provenance.")
+    group.add_argument(
+        "-p", "--purge",
+        action='store_true',
+        help="Delete the entire Solr index.")
+
+    # Optoinal arguments
+    parser.add_argument(
+        "-r", "--recursive",
+        action='store_true',
+        help="Recurse into subfolders when adding JSON files.")
 
     # Print version
     parser.add_argument("--version", action="version", version="%(prog)s - Version {}".format(geodatautils.manage.__version__))
@@ -38,5 +62,10 @@ def update_solr():
     # Set logger name
     logging.getLogger().setLevel(logging.DEBUG)
 
-    # Run update
-    geodatautils.manage.update(args.inPath, solr_instance_name='geodata-test')
+    # Run tools
+    if any([args.delete, args.delete_collection, args.delete_provenance, args.purge]):
+        print("Not implemented yet. Exiting.")
+    elif args.addFolder:
+        geodatautils.manage.update(args.addFolder, solr_instance_name=args.instance)
+    else:  # This shouldn't happen
+        print("No tool selected")
