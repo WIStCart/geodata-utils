@@ -16,7 +16,7 @@ from .solr import Solr
 from . import schema
 
 
-def update(in_path, solr_instance_name):
+def add(in_path, solr_instance_name):
     """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
