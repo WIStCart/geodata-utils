@@ -8,7 +8,6 @@ __version__ = 1.0
 
 
 import logging
-import re
 
 from .helpers import create_file_list, open_json
 from .logging_config import LogFormat
