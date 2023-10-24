@@ -24,12 +24,13 @@ log:
     default:
       format: "%(asctime)s [%(levelname)s]%(indent)s%(message)s"
     simple:
-      format: "[%(levelname)s] %(message)s"
+      format: "%(indent)s%(message)s"
   handlers:
     console:
       class: logging.StreamHandler
-      level: WARNING
+      level: INFO
       formatter: simple
+      filters: [indent]
       stream: ext://sys.stdout
     file:
       class: logging.FileHandler
