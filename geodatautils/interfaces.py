@@ -35,7 +35,7 @@ def update_solr():
         help="Indicate path to folder with GeoBlacklight JSON files that will be uploaded.")
     group.add_argument(
         "-d", "--delete",
-        help="Delete the provided unique record ID (layer_slug) from the Solr index.")
+        help="Delete the provided unique record ID (layer_slug_s) from the Solr index.")
     group.add_argument(
         "-dc", "--delete-collection",
         help="Remove an entire collection from the Solr index.")
@@ -67,7 +67,11 @@ def update_solr():
         geodatautils.manage.add(args.addFolder, solr_instance_name=args.instance)
     elif args.purge:
         geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*")
-    elif any([args.delete, args.delete_collection, args.delete_provenance]):
-        print("Not implemented yet. Exiting.")
+    elif args.delete:
+        geodatautils.manage.delete(solr_instance_name=args.instance, query="layer_slug_s:{}".format(args.delete))
+    elif args.delete_collection:
+        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_isPartOf_sm:"{}"'.format(args.delete_collection))
+    elif args.delete_provenance:
+        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance))
     else:  # This shouldn't happen
         print("No tool selected")
