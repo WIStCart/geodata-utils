@@ -14,7 +14,7 @@ from geodatautils import config
 def update_solr():
     """Update Solr
     
-    Update a solr instance. Add records, remove records.
+    Interface to update a solr instance. Add records, remove records.
     """
 
     # Create argument parser
@@ -32,7 +32,7 @@ def update_solr():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "-a", "--addFolder",
-        help="Indicate path to folder with GeoBlacklight JSON files that will be uploaded.")
+        help="Indicate path to a single file or folder with GeoBlacklight JSON files that will be uploaded.")
     group.add_argument(
         "-d", "--delete",
         help="Delete the provided unique record ID (layer_slug_s) from the Solr index.")
@@ -51,7 +51,7 @@ def update_solr():
     parser.add_argument(
         "-r", "--recursive",
         action='store_true',
-        help="Recurse into subfolders when adding JSON files.")
+        help="[Deprecated] Recurse into subfolders when adding JSON files.")
 
     # Print version
     parser.add_argument("--version", action="version", version="%(prog)s - Version {}".format(geodatautils.manage.__version__))
@@ -59,8 +59,12 @@ def update_solr():
     # Parse arguments
     args = parser.parse_args()
 
-    # Set logger name
+    # Set logger level
     logging.getLogger().setLevel(logging.DEBUG)
+
+    # Deprecation warning
+    if args.recursive:
+        logging.warning('The "-r" recursive option is deprecated and no longer used by script. Using -a will add either a file or a directory recursively.')
 
     # Run tools
     if args.addFolder:
