@@ -26,5 +26,5 @@ dynamic = ["version"]
 update_solr = "geodatautils.interfaces:update_solr"
 
 [tool.setuptools.package-data]
-"geodatautils.config" = ["config.yml"],
-"geodatautils.config.schemas" = ["*.json"],
+"geodatautils.config" = ["config.yml"]
+"geodatautils.config.schemas" = ["*.json"]
