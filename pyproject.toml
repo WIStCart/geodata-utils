@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geodatautils"
+authors = [
+    {name = "Hayden Elza", email = "hayden.elza@gmail.com"},
+]
+description = "Utilities for managing the GeoData@Wisconsin GeoBlacklight instance."
+readme = "README.md"
+requires-python = ">=3.11.5"
+keywords = ["geodata", "geoblacklight"]
+license = {text = "GPLv3"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    'pyyaml',
+    'requests',
+    'jsonschema',
+]
+dynamic = ["version"]
+
+[project.scripts]
+update_solr = "geodatautils.interfaces:update_solr"
+
+[tool.setuptools.package-data]
+"geodatautils.config" = ["config.yml"],
+"geodatautils.config.schemas" = ["*.json"],
