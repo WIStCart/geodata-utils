@@ -7,6 +7,10 @@ setup(
     author='Hayden Elza',
     license='GPLv3',
     packages=find_packages(where='geodatautils'),
+    package_data={
+        "geodatautils.config": ["config.yml"],
+        "geodatautils.config.schemas": ["*.json"],
+    },
     install_requires=['pyyaml','requests','jsonschema'],
     entry_points={
         'console_scripts': [
