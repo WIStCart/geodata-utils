@@ -9,7 +9,7 @@ authors = [
 ]
 description = "Utilities for managing the GeoData@Wisconsin GeoBlacklight instance."
 readme = "README.md"
-requires-python = ">=3.11.5"
+requires-python = ">=3.9"
 keywords = ["geodata", "geoblacklight"]
 license = {text = "GPLv3"}
 classifiers = [
