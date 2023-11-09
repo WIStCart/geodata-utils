@@ -19,20 +19,21 @@ conda activate geodata-utils
 
 ### Install
 
-Pip Install via Git
-```bash
-
-```
-
-Change to this directory and run:
+Install `geodatautils` using Pip directly from the GitHub repository using:
 
 ```bash
-python setup.py install
+python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
 ```
 
 ### Configure Settings
 
-Using `config/config-template.yml` as a starting point, edit the 'solr instances' to fit your needs and save as `config/config.yml`.
+Run the following to find the path for `config-template.yml`:
+
+```bash
+python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib()+'/geodatautils/config/config-template.yml')"
+```
+
+Open that file, edit the 'solr instances' to fit your needs and save as `config.yml` in the same location.
 
 
 
@@ -65,7 +66,7 @@ Examples:
 # Add record from file
 update_solr -i geodata-test -a record.json
 
-# Add records in directory
+# Add records in directory and all subdirectories
 update_solr -i geodata-test -a path/to/directory/
 
 # Purge all records
@@ -76,8 +77,18 @@ update_solr -i geodata-test -p
 
 ## Development Mode
 
-Change to this directory and run:
+Clone the repository and change and run:
 
 ```bash
-python setup.py develop
+python -m pip install --editable
+```
+
+
+
+## Uninstall
+
+To uninstall an installation of `geodatautils` run:
+
+```bash
+python -m pip uninstall geodatautils
 ```
