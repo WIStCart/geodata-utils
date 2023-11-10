@@ -8,13 +8,11 @@ Utilities for managing GeoData@Wisconsin.
 
 ### Virtual Environment
 
-This is optional, but necessary if you have conflicting packages on your system that you need for other projects.
-
-Change directories to the repository, then run:
+You'll need to create a virtual environment to ensure compatibility with dependencies. To do this, open the "Python Command Prompt" that comes with ArcGIS Pro:
 
 ```bash
-conda create --name geodata-utils python=3.11.5
-conda activate geodata-utils
+conda create --name geodata-utils python=3.11.5 --yes
+activate geodata-utils
 ```
 
 ### Install
@@ -27,13 +25,25 @@ python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archiv
 
 ### Configure Settings
 
-Run the following to find the path for `config-template.yml`:
+Run the following to open and set `config.yml`:
 
 ```bash
-python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib()+'/geodatautils/config/config-template.yml')"
+for /f "delims=" %i in ('python -c "from distutils.sysconfig import get_python_lib; from os.path import join; print(join(get_python_lib(),'geodatautils','config'))"') do set configpath=%i
+ren %configpath%\config-template.yml config.yml
+notepad %configpath%\config.yml
 ```
 
-Open that file, edit the 'solr instances' to fit your needs and save as `config.yml` in the same location.
+When notepad opens, edit the 'solr instances' to fit your needs and save.
+
+
+
+## How to Reopen Environment
+
+When you need to open this environment in the future, open "Python Command Prompt" and run:
+
+```bash
+activate geodata-utils
+```
 
 
 
