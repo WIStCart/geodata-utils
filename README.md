@@ -6,34 +6,22 @@ Utilities for managing GeoData@Wisconsin.
 
 ## Setup
 
-### Virtual Environment
-
-This is optional, but necessary if you have conflicting packages on your system that you need for other projects.
-
-Change directories to the repository, then run:
+If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
 
 ```bash
-conda create --name geodata-utils python=3.11.5
-conda activate geodata-utils
+cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat
 ```
 
-### Install
+When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
 
-Install `geodatautils` using Pip directly from the GitHub repository using:
+
+## How to Reopen Environment
+
+When you need to open this environment in the future, open "Python Command Prompt" and run:
 
 ```bash
-python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
+activate geodata-utils
 ```
-
-### Configure Settings
-
-Run the following to find the path for `config-template.yml`:
-
-```bash
-python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib()+'/geodatautils/config/config-template.yml')"
-```
-
-Open that file, edit the 'solr instances' to fit your needs and save as `config.yml` in the same location.
 
 
 
