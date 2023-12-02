@@ -6,33 +6,22 @@ Utilities for managing GeoData@Wisconsin.
 
 ## Setup
 
-### Virtual Environment
-
-This is optional, but necessary if you have conflicting packages on your system that you need for other projects.
-
-Change directories to the repository, then run:
+If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
 
 ```bash
-conda create --name geodata-utils python=3.11.5
-conda activate geodata-utils
+cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat
 ```
 
-### Install
+When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
 
-Pip Install via Git
-```bash
 
-```
+## How to Reopen Environment
 
-Change to this directory and run:
+When you need to open this environment in the future, open "Python Command Prompt" and run:
 
 ```bash
-python setup.py install
+activate geodata-utils
 ```
-
-### Configure Settings
-
-Using `config/config-template.yml` as a starting point, edit the 'solr instances' to fit your needs and save as `config/config.yml`.
 
 
 
@@ -65,7 +54,7 @@ Examples:
 # Add record from file
 update_solr -i geodata-test -a record.json
 
-# Add records in directory
+# Add records in directory and all subdirectories
 update_solr -i geodata-test -a path/to/directory/
 
 # Purge all records
@@ -76,8 +65,18 @@ update_solr -i geodata-test -p
 
 ## Development Mode
 
-Change to this directory and run:
+Clone the repository and change and run:
 
 ```bash
-python setup.py develop
+python -m pip install --editable
+```
+
+
+
+## Uninstall
+
+To uninstall an installation of `geodatautils` run:
+
+```bash
+python -m pip uninstall geodatautils
 ```

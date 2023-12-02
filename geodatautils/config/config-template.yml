@@ -48,6 +48,6 @@ log:
       handlers: [console, file]
 
 metadata-schemas:
-  geoblacklight-aardvark: config/schemas/geoblacklight-schema-aardvark.json
-  geoblacklight-1: config/schemas/geoblacklight-schema-1.0.json
-  geoblacklight-1-no_enum: config/schemas/geoblacklight-schema-1.0-no_enum.json
+  geoblacklight-aardvark: geoblacklight-schema-aardvark.json
+  geoblacklight-1: geoblacklight-schema-1.0.json
+  geoblacklight-1-no_enum: geoblacklight-schema-1.0-no_enum.json
