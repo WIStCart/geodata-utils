@@ -6,35 +6,13 @@ Utilities for managing GeoData@Wisconsin.
 
 ## Setup
 
-### Virtual Environment
-
-You'll need to create a virtual environment to ensure compatibility with dependencies. To do this, open the "Python Command Prompt" that comes with ArcGIS Pro:
+If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
 
 ```bash
-conda create --name geodata-utils python=3.11.5 --yes
-activate geodata-utils
+cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat
 ```
 
-### Install
-
-Install `geodatautils` using Pip directly from the GitHub repository using:
-
-```bash
-python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
-```
-
-### Configure Settings
-
-Run the following to open and set `config.yml`:
-
-```bash
-for /f "delims=" %i in ('python -c "from distutils.sysconfig import get_python_lib; from os.path import join; print(join(get_python_lib(),'geodatautils','config'))"') do set configpath=%i
-ren %configpath%\config-template.yml config.yml
-notepad %configpath%\config.yml
-```
-
-When notepad opens, edit the 'solr instances' to fit your needs and save.
-
+When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
 
 
 ## How to Reopen Environment
