@@ -5,7 +5,7 @@
 CALL create_python_env.bat
 
 :: Install geodata-utils python library
-python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/dev.tar.gz
+python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
 
 :: Open config so it can be set by user
 for /f "delims=" %%i in ('python -c "from distutils.sysconfig import get_python_lib; from os.path import join; print(join(get_python_lib(),'geodatautils','config'))"') do set configpath=%%i

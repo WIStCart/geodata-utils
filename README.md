@@ -9,7 +9,7 @@ Utilities for managing GeoData@Wisconsin.
 If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
 
 ```bash
-cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat
+cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat && cd .. && del /s /q "geodata-utils-main.tar.gz" && rd /s /q "install scripts"
 ```
 
 When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
@@ -22,6 +22,14 @@ When you need to open this environment in the future, open "Python Command Promp
 ```bash
 activate geodata-utils
 ```
+
+Optionally you can create a shortcut and set the target to:
+
+```bash
+cmd /k activate geodata-utils
+```
+
+Edit the properties of the shortcut to set the `start in` as blank. This will set the path to where ever the shortcut is located.
 
 
 
