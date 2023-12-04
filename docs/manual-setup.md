@@ -4,11 +4,11 @@ If you do not run windows, do not have ArcGIS Pro, or the install scripts are no
 
 ## Virtual Environment
 
-You'll need to create a virtual environment to ensure compatibility with dependencies. To do this, open the "Python Command Prompt" that comes with ArcGIS Pro:
+You'll likely want to create a virtual environment to ensure compatibility with dependencies. For example, if using Conda:
 
 ```bash
 conda create --name geodata-utils python=3.11.5 --yes
-activate geodata-utils
+conda activate geodata-utils
 ```
 
 ## Install
