@@ -8,6 +8,8 @@ Utilities for managing GeoData@Wisconsin.
 
 If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
 
+Open the "Python Command Prompt" that comes with ArcGIS Pro and run the following:
+
 ```bash
 cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat && cd .. && del /s /q "geodata-utils-main.tar.gz" && rd /s /q "install scripts"
 ```
