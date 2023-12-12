@@ -25,14 +25,6 @@ When you need to open this environment in the future, open "Python Command Promp
 activate geodata-utils
 ```
 
-Optionally you can create a shortcut and set the target to:
-
-```bash
-cmd /k activate geodata-utils
-```
-
-Edit the properties of the shortcut to set the `start in` as blank. This will set the path to where ever the shortcut is located.
-
 
 
 ## Tools
