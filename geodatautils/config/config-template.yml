@@ -38,7 +38,8 @@ log:
       formatter: default
       filters: [indent]
       filename: geodatautils.log
-      mode: w 
+      mode: w
+      encoding: utf8
   loggers:
     urllib3:
       handlers: [console]
