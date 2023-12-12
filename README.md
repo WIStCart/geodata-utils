@@ -25,14 +25,6 @@ When you need to open this environment in the future, open "Python Command Promp
 activate geodata-utils
 ```
 
-Optionally you can create a shortcut and set the target to:
-
-```bash
-cmd /k activate geodata-utils
-```
-
-Edit the properties of the shortcut to set the `start in` as blank. This will set the path to where ever the shortcut is located.
-
 
 
 ## Tools
@@ -62,13 +54,13 @@ options:
 Examples:
 ```bash
 # Add record from file
-update_solr -i geodata-test -a record.json
+update_solr -i test -a record.json
 
 # Add records in directory and all subdirectories
-update_solr -i geodata-test -a path/to/directory/
+update_solr -i test -a path/to/directory/
 
 # Purge all records
-update_solr -i geodata-test -p
+update_solr -i test -p
 ```
 
 
@@ -78,7 +70,7 @@ update_solr -i geodata-test -p
 Clone the repository and change and run:
 
 ```bash
-python -m pip install --editable
+python -m pip install --editable .
 ```
 
 
