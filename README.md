@@ -78,7 +78,7 @@ update_solr -i geodata-test -p
 Clone the repository and change and run:
 
 ```bash
-python -m pip install --editable
+python -m pip install --editable .
 ```
 
 
