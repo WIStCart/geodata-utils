@@ -1,15 +1,15 @@
 version: 1
 
 solr instances:
-  geodata-dev:
+  dev:
     url: "https://geodata-dev.shc.wisc.edu/solr/geodata-core/"
     username: "yourusername"
     password: "yourpassword"
-  geodata-test:
+  test:
     url: "https://geodata-test.sco.wisc.edu/solr/geodata-core/"
     username: "yourusername"
     password: "yourpassword"
-  geodata-prod:
+  prod:
     url: "https://geodata.wisc.edu/solr/geodata-core/"
     username: "yourusername"
     password: "yourpassword"

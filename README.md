@@ -54,13 +54,13 @@ options:
 Examples:
 ```bash
 # Add record from file
-update_solr -i geodata-test -a record.json
+update_solr -i test -a record.json
 
 # Add records in directory and all subdirectories
-update_solr -i geodata-test -a path/to/directory/
+update_solr -i test -a path/to/directory/
 
 # Purge all records
-update_solr -i geodata-test -p
+update_solr -i test -p
 ```
 
 
