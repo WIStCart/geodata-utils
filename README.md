@@ -77,7 +77,19 @@ python -m pip install --editable .
 
 ## Uninstall
 
-To uninstall an installation of `geodatautils` run:
+To uninstall environment:
+
+```bash
+conda env remove --name geodata-utils
+```
+
+You can check what environments are installed with:
+
+```bash
+conda env list
+```
+
+If you just want to uninstall the `geodatautils` python library run:
 
 ```bash
 python -m pip uninstall geodatautils
