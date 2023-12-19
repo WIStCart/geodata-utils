@@ -1,4 +1,4 @@
-# Update Index
+# Update Solr
 
 A tool used to update the Solr index using local JSON files that are pushed to a specified Solr instance. The JSON files first checked for errors and will exit if any are found.
 
