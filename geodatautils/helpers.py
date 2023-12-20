@@ -41,5 +41,5 @@ def create_file_list(in_path:str) -> list:
 def open_json(file_path:str) -> dict:
     """Given a file path to a JSON file, return the JSON loaded into a dictionary."""
 
-    with open(file_path) as f:
+    with open(file_path, encoding="utf8") as f:
         return json.load(f)
