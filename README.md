@@ -17,12 +17,21 @@ cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-uti
 When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
 
 
+
 ## How to Reopen Environment
 
 When you need to open this environment in the future, open "Python Command Prompt" and run:
 
 ```bash
 activate geodata-utils
+```
+
+
+
+## Update `geodatautils` Library
+
+```bash
+python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
 ```
 
 
