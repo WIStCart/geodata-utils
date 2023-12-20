@@ -31,7 +31,7 @@ def update_solr():
     # Required exclusive group (one and only one from group)
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
-        "-a", "--addFolder",
+        "-a", "--add",
         help="Indicate path to a single file or folder with GeoBlacklight JSON files that will be uploaded.")
     group.add_argument(
         "-d", "--delete",
@@ -67,8 +67,8 @@ def update_solr():
         logging.warning('The "-r" recursive option is deprecated and no longer used by script. Using -a will add either a file or a directory recursively.')
 
     # Run tools
-    if args.addFolder:
-        geodatautils.manage.add(args.addFolder, solr_instance_name=args.instance)
+    if args.add:
+        geodatautils.manage.add(args.add, solr_instance_name=args.instance)
     elif args.purge:
         geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*")
     elif args.delete:
