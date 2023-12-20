@@ -30,4 +30,4 @@ update_solr = "geodatautils.interfaces:update_solr"
 "geodatautils.config.schemas" = ["*.json"]
 
 [tool.setuptools.dynamic]
-version = {attr = "geodatautils.version"}
+version = {attr = "geodatautils.__version__"}
