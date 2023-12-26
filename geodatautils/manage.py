@@ -67,7 +67,7 @@ def add(in_path, solr_instance_name):
     else: 
         logging.warning("Exited with errors; check log.")
 
-def delete(solr_instance_name:str, query:str) -> None:
+def delete(solr_instance_name:str, query:str, confirm_action:bool=False) -> None:
     """Delete records from Solr instance based on query."""
 
     # Initialize log
@@ -93,5 +93,12 @@ def delete(solr_instance_name:str, query:str) -> None:
         logging.info(doc['dc_identifier_s'], extra={'indent': LogFormat.indent(1, tree=True)})
     
     # Confirm deletion if desired
+    if confirm_action:
+        confirm = input("Are you sure you want to delete {} record{} from instance {}? (y/N)".format(num_found, ("" if num_found==1 else "s"), solr_instance_name))
+        if confirm.lower() != "y": 
+            logging.info("Operation aborted by user.")
+            return
+
+    # Delete records
     solr.delete(q=query)
     logging.info("{} record{} successfully deleted.".format(num_found, ("" if num_found==1 else "s")))

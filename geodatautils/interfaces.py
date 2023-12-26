@@ -70,12 +70,12 @@ def update_solr():
     if args.add:
         geodatautils.manage.add(args.add, solr_instance_name=args.instance)
     elif args.purge:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*")
+        geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*", confirm_action=True)
     elif args.delete:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query="layer_slug_s:{}".format(args.delete))
+        geodatautils.manage.delete(solr_instance_name=args.instance, query="layer_slug_s:{}".format(args.delete), confirm_action=True)
     elif args.delete_collection:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_isPartOf_sm:"{}"'.format(args.delete_collection))
+        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_isPartOf_sm:"{}"'.format(args.delete_collection), confirm_action=True)
     elif args.delete_provenance:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance))
+        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance), confirm_action=True)
     else:  # This shouldn't happen
         print("No tool selected")
