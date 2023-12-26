@@ -8,6 +8,7 @@ import requests  # I chose requests over urllib because although it adds another
 from requests.compat import urljoin
 
 from geodatautils import config
+from .helpers import exit_gracefully
 
 
 class Solr:
@@ -38,10 +39,19 @@ class Solr:
             ('q', q),
             ('fl', fl)
         ]
-        
-        raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password)).json()
 
-        return raw_response
+        try:
+            raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password))
+            raw_response.raise_for_status()
+            return raw_response.json()
+        except requests.exceptions.HTTPError as e:
+            exit_gracefully("Http Error: {}".format(e))
+        except requests.exceptions.ConnectionError as e:
+            exit_gracefully("Error Connecting: {}".format(e))
+        except requests.exceptions.Timeout as e:
+            exit_gracefully("Timeout Error: {}".format(e))
+        except requests.exceptions.RequestException as e:
+            exit_gracefully("Request Error: {}".format(e))
     
     def update(self, data:str, commit:bool=True) -> dict:
         """Use supplied list of records to update Solr instance."""
@@ -63,6 +73,15 @@ class Solr:
         headers = {"Content-Type":"application/json"}
         
         # Post records to solr
-        raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password)).json()
-
-        return raw_response
+        try:
+            raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password))
+            raw_response.raise_for_status()
+            return raw_response.json()
+        except requests.exceptions.HTTPError as e:
+            exit_gracefully("Http Error: {}".format(e))
+        except requests.exceptions.ConnectionError as e:
+            exit_gracefully("Error Connecting: {}".format(e))
+        except requests.exceptions.Timeout as e:
+            exit_gracefully("Timeout Error: {}".format(e))
+        except requests.exceptions.RequestException as e:
+            exit_gracefully("Request Error: {}".format(e))

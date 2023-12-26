@@ -8,6 +8,7 @@ import os
 import logging
 import glob
 import json
+import sys
 
 
 def create_file_list(in_path:str) -> list:
@@ -43,3 +44,10 @@ def open_json(file_path:str) -> dict:
 
     with open(file_path, encoding="utf8") as f:
         return json.load(f)
+
+def exit_gracefully(message:str) -> None:
+    """Log error message then exit without traceback."""
+
+    logging.exception(message)
+    logging.warning("Exited with errors; check log.")
+    sys.exit()
