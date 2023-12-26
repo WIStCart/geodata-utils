@@ -70,12 +70,28 @@ def add(in_path, solr_instance_name):
 def delete(solr_instance_name:str, query:str) -> None:
     """Delete records from Solr instance based on query."""
 
+    # Initialize log
+    logging.info("Delete from {} where {}".format(solr_instance_name, query))
+
     # Initialize solr instance
     solr = Solr(solr_instance_name)
 
-    # logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
-    
-    raw_response = solr.delete(q=query)
-    print(raw_response)
+    # Get number of records
+    """Note: this is vulnerable to time-of-check time-of-use (TOCTOU) errors
+    but there is no other way to report how many records will be deleted."""
+    raw_response = solr.select(q=query)
+    num_found = raw_response['response']['numFound']
 
-    return
+    # Exit if no records to delete
+    if num_found == 0:
+        logging.info("No matching records found. Exiting.")
+        return
+
+    # List matching records
+    logging.info("{} record{} will be deleted".format(num_found, ("" if num_found==1 else "s")))
+    for doc in raw_response['response']['docs']:
+        logging.info(doc['dc_identifier_s'], extra={'indent': LogFormat.indent(1, tree=True)})
+    
+    # Confirm deletion if desired
+    solr.delete(q=query)
+    logging.info("{} record{} successfully deleted.".format(num_found, ("" if num_found==1 else "s")))
