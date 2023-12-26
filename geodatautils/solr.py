@@ -38,10 +38,14 @@ class Solr:
             ('q', q),
             ('fl', fl)
         ]
-        
-        raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password)).json()
 
-        return raw_response
+        # Query solr instance
+        raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password))
+
+        # Raise any errors
+        raw_response.raise_for_status()
+
+        return raw_response.json()
     
     def update(self, data:str, commit:bool=True) -> dict:
         """Use supplied list of records to update Solr instance."""
@@ -63,6 +67,10 @@ class Solr:
         headers = {"Content-Type":"application/json"}
         
         # Post records to solr
-        raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password)).json()
-
-        return raw_response
+        raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password))
+        
+        # Raise any errors
+        raw_response.raise_for_status()
+        
+        return raw_response.json()
+        
