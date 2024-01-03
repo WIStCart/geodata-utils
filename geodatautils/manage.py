@@ -47,7 +47,7 @@ def add(in_path, solr_instance_name):
     # If no errors
     if not errors:
 
-        logging.info("Uploading {} documents to {}.".format(len(file_list), solr_instance_name))
+        logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
         
         # For each file
         for file_name in file_list:
@@ -63,6 +63,8 @@ def add(in_path, solr_instance_name):
 
             # Update solr index
             solr.update(str([data]))
+        
+        logging.info("Successfully uploaded {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
 
     else: 
         logging.warning("Exited with errors; check log.")
