@@ -41,14 +41,14 @@ python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archiv
 ### `update_solr`
 
 ```text
-update_solr [-h] -i INSTANCE (-a ADDFOLDER | -d DELETE | -dc DELETE_COLLECTION | -dp DELETE_PROVENANCE | -p) [-r] [--version]   
+update_solr [-h] -i INSTANCE (-a ADD | -d DELETE | -dc DELETE_COLLECTION | -dp DELETE_PROVENANCE | -p) 
+                   [-r] [--version]
 
 options:
-  -h, --help            show this help message and exit                                                                --purge is required
-  -i INSTANCE, --instance INSTANCE
-                        Identify which instance of Solr to use.                                                        ecursively.
-  -a ADDFOLDER, --addFolder ADDFOLDER
-                        Indicate path to a single file or folder with GeoBlacklight JSON files that will be uploaded. 
+  -h, --help            show this help message and exit
+  -i INSTANCE --instance INSTANCE
+                        Identify which instance of Solr to use.
+  -a ADD, --add ADD     Indicate path to a single file or folder with GeoBlacklight JSON files that will be uploaded.
   -d DELETE, --delete DELETE
                         Delete the provided unique record ID (layer_slug_s) from the Solr index.
   -dc DELETE_COLLECTION, --delete-collection DELETE_COLLECTION
