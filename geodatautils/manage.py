@@ -27,6 +27,11 @@ def add(in_path, solr_instance_name):
     # Get list of geoblacklight json files to process
     file_list = create_file_list(in_path)
 
+    # Check that file_list is not empty
+    if len(file_list) < 1:
+        logging.info("No documents found in '{}'; exiting.".format(in_path))
+        return
+
     logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
 
     # For each file
