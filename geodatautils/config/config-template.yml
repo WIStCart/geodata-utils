@@ -48,7 +48,9 @@ log:
       level: INFO
       handlers: [console, file]
 
-metadata-schemas:
-  geoblacklight-aardvark: geoblacklight-schema-aardvark.json
-  geoblacklight-1: geoblacklight-schema-1.0.json
-  geoblacklight-1-no_enum: geoblacklight-schema-1.0-no_enum.json
+metadata-schema:
+  options:
+    geoblacklight-aardvark: geoblacklight-schema-aardvark.json
+    geoblacklight-1: geoblacklight-schema-1.0.json
+    geoblacklight-1-no_enum: geoblacklight-schema-1.0-no_enum.json
+  default: geoblacklight-1-no_enum

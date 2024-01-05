@@ -9,13 +9,14 @@ __version__ = 1.0
 
 import logging
 
+from geodatautils import config
 from .helpers import create_file_list, open_json
 from .logging_config import LogFormat
 from .solr import Solr
 from . import schema
 
 
-def add(in_path, solr_instance_name):
+def add(in_path, solr_instance_name, metadata_schema=config['metadata-schema']['default']):
     """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
@@ -44,7 +45,7 @@ def add(in_path, solr_instance_name):
         data = open_json(file_name)
 
         # Validate schema
-        schema.validate(data, 'geoblacklight-1-no_enum')
+        schema.validate(data, metadata_schema)
 
         # Check for errors
         errors = schema.error_check(data, solr) or errors

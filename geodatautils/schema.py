@@ -76,7 +76,7 @@ def validate(data:dict, schema_name:str) -> bool:
     """Validate GeoBlacklight JSON schema."""
 
     # Load schema from config
-    schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schemas'][schema_name])
+    schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name])
     schema = open_json(schema_path)
 
     # Compare data to schema
