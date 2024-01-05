@@ -26,8 +26,12 @@ def error_check(data:dict, solr:Solr) -> bool:
     # Fields are not null
     fields = ['dc_title_s', 'dc_identifier_s', 'layer_slug_s', 'solr_geom', 'dct_provenance_s', 'dc_rights_s', 'geoblacklight_version', 'dc_creator_sm', 'dc_description_s', 'dct_references_s', 'dct_temporal_sm', 'solr_year_i', 'layer_modified_dt']
     for field in fields:
-        if data[field] == "": 
-            logging.error("{} is empty".format(field), extra={'indent': LogFormat.indent(2, True)})
+        try:
+            if data[field] == "": 
+                logging.error("'{}' is empty".format(field), extra={'indent': LogFormat.indent(2, True)})
+                errors = True
+        except KeyError:
+            logging.error("Required field '{}' was not found.".format(field), extra={'indent': LogFormat.indent(2, True)})
             errors = True
 
     # Check that dc_identifier_s and layer_slug_s match
