@@ -16,7 +16,7 @@ from .solr import Solr
 from . import schema
 
 
-def add(in_path, solr_instance_name, metadata_schema=config['metadata-schema']['default']):
+def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadata-schema']['default']) -> None:
     """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
