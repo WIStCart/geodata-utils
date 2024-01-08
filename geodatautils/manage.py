@@ -45,7 +45,8 @@ def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadat
         data = open_json(file_name)
 
         # Validate schema
-        schema.validate(data, metadata_schema)
+        if not schema.validate(data, metadata_schema):
+            errors = True
 
         # Check for errors
         errors = schema.error_check(data, solr) or errors

@@ -9,7 +9,8 @@ import logging
 import re
 from importlib.resources import files
 
-from jsonschema import validate as jsonschemavalidate
+from jsonschema import validators
+from jsonschema.exceptions import SchemaError
 
 from geodatautils import config
 from .helpers import open_json
@@ -18,7 +19,16 @@ from .solr import Solr
 
 
 def error_check(data:dict, solr:Solr) -> bool:
-    """Check for errors in a GeoBlacklight JSON file."""
+    """Check for errors in a GeoBlacklight JSON file.
+    
+    Arguments:
+    data (dict) -- contents of the geoblacklight JSON file
+    solr (Solr) -- initilized solr object (geodatautils.solr.Solr)
+
+    Returns:
+    errors (bool) -- True if there were errors; False if no errors occured
+    """
+    # TODO: This entire function can be replace by the schema validation in most recent validator versions, i.e. aardvark but not geodata-1.0
 
     # Initialize error tracker
     errors = False
@@ -79,5 +89,32 @@ def validate(data:dict, schema_name:str) -> bool:
     schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name])
     schema = open_json(schema_path)
 
-    # Compare data to schema
-    jsonschemavalidate(instance=data, schema=schema)
+    # Set validator
+    validator = validators.validator_for(schema)
+    v = validator(schema)
+
+    # Validate schema
+    try:
+        validator.check_schema(schema)
+    except SchemaError as e:
+        logging.error("Schema Error: the input schema '{}' is not valid".format(schema), extra={'indent': LogFormat.indent(2, True)})
+
+    # If schema of data is invlaid
+    if not v.is_valid(data):
+
+        # Log validator in debug
+        logging.debug("Using '{}' validator".format(validator.__name__), extra={'indent': LogFormat.indent(2)})
+        
+        # Log errors
+        for error in v.iter_errors(data):
+
+            # Only topmost error of context
+            # TODO: this likely needs improvement, but perhaps good enough for now
+            suberror = sorted(error.context, key=lambda e: e.schema_path)[0]
+            logging.error("Schema Validation Error: {}: {}".format(":".join(map(str,list(suberror.schema_path))), suberror.message), extra={'indent': LogFormat.indent(2, True)})
+
+        return False
+    
+    # If schema of data is valid
+    else:
+        return True
