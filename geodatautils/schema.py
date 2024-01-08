@@ -107,11 +107,8 @@ def validate(data:dict, schema_name:str) -> bool:
         
         # Log errors
         for error in v.iter_errors(data):
-
-            # Only topmost error of context
-            # TODO: this likely needs improvement, but perhaps good enough for now
-            suberror = sorted(error.context, key=lambda e: e.schema_path)[0]
-            logging.error("Schema Validation Error: {}: {}".format(":".join(map(str,list(suberror.schema_path))), suberror.message), extra={'indent': LogFormat.indent(2, True)})
+            for suberror in sorted(error.context, key=lambda e: e.schema_path)[:-1]:
+                logging.error("Schema Validation Error: {}: {}".format(":".join(map(str,list(suberror.schema_path))), suberror.message), extra={'indent': LogFormat.indent(2, True)})
 
         return False
     
