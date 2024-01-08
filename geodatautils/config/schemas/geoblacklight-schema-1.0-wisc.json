@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/schema#",
   "description": "Schema for GeoBlacklight. See https://github.com/geoblacklight/geoblacklight/wiki/Schema for more details.",
   "id": "http://geoblacklight.org/v1.0/schema",
   "title": "GeoBlacklight Schema - v1.0",
@@ -14,8 +14,18 @@
         "dc_rights_s",
         "dct_provenance_s",
         "layer_slug_s",
-        "solr_geom"
+        "solr_geom",
+        "geoblacklight_version",
+        "dc_creator_sm",
+        "dc_description_s",
+        "dct_references_s",
+        "dct_temporal_sm",
+        "solr_year_i",
+        "layer_modified_dt"
       ],
+      "dependentRequired": {
+        "solr_year_i": ["dct_temporal_sm"]
+      },        
       "properties": {
         "uuid": {
           "type": "string",
@@ -24,25 +34,30 @@
         },
         "dc_identifier_s": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "Unique identifier for layer as a URI. It should be globally unique across all institutions, assumed not to be end-user visible, and is usually of the form `http://institution/id`. See https://github.com/geoblacklight/geoblacklight/wiki/Schema for more detailed documentation.",
           "example": "http://purl.stanford.edu/vr593vj7147"
         },
         "dc_title_s": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "Title for the layer.",
           "example": "My Title"
         },
         "dc_description_s": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "Description for the layer. *Optional*",
           "example": "My Description"
         },
         "dc_rights_s": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "Access rights for the layer."
         },
         "dct_provenance_s": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "Institution who holds the layer.",
           "example": "Stanford"
         },
@@ -68,6 +83,7 @@
         },
         "layer_modified_dt": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "format": "date-time",
           "description": "Last modification date for the metadata record, using XML Schema dateTime format (YYYY-MM-DDThh:mm:ssZ). *Optional*"
         },
@@ -91,7 +107,8 @@
         "dc_creator_sm": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "$ref": "#/definitions/non-empty-string"
           },
           "description": "Author(s) of the layer. *Optional*",
           "example": "George Washington, Thomas Jefferson"
@@ -134,7 +151,8 @@
         "dct_temporal_sm": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "$ref": "#/definitions/non-empty-string"
           },
           "description": "Temporal coverage for the layer, typically years or dates. Note that this field is not in a specific date format. *Optional*",
           "example": "1989, circa 2010, 2007-2009"
@@ -175,9 +193,14 @@
         },
         "geoblacklight_version": {
           "type": "string",
+          "$ref": "#/definitions/non-empty-string",
           "description": "The version of the GeoBlacklight Schema to which this metadata record conforms."
         }
       }
+    },
+    "non-empty-string": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "anyOf": [
