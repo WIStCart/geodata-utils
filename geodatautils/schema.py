@@ -18,6 +18,19 @@ from .logging_config import LogFormat
 from .solr import Solr
 
 
+def empty_missing(data:dict, property:str) -> bool:
+    try:
+        if data[property] == "": 
+            logging.error("'{}' is empty".format(property), extra={'indent': LogFormat.indent(2, True)})
+            return True
+    
+    except KeyError:
+        logging.error("Required property '{}' was not found.".format(property), extra={'indent': LogFormat.indent(2, True)})
+        return True
+    
+    return False
+
+
 def error_check(data:dict, solr:Solr) -> bool:
     """Check for errors in a GeoBlacklight JSON file.
     
@@ -28,7 +41,8 @@ def error_check(data:dict, solr:Solr) -> bool:
     Returns:
     errors (bool) -- True if there were errors; False if no errors occured
     """
-    # TODO: This entire function can be replace by the schema validation in most recent validator versions, i.e. aardvark but not geodata-1.0
+    # TODO: much of this function can be replace by the schema validation in most recent validator versions
+    # For example: required and not empty
 
     # Initialize error tracker
     errors = False
@@ -36,12 +50,7 @@ def error_check(data:dict, solr:Solr) -> bool:
     # Fields are not null
     fields = ['dc_title_s', 'dc_identifier_s', 'layer_slug_s', 'solr_geom', 'dct_provenance_s', 'dc_rights_s', 'geoblacklight_version', 'dc_creator_sm', 'dc_description_s', 'dct_references_s', 'dct_temporal_sm', 'solr_year_i', 'layer_modified_dt']
     for field in fields:
-        try:
-            if data[field] == "": 
-                logging.error("'{}' is empty".format(field), extra={'indent': LogFormat.indent(2, True)})
-                errors = True
-        except KeyError:
-            logging.error("Required field '{}' was not found.".format(field), extra={'indent': LogFormat.indent(2, True)})
+        if empty_missing(data, field):
             errors = True
 
     # Check that dc_identifier_s and layer_slug_s match
