@@ -30,7 +30,7 @@ def create_file_list(in_path:str) -> list:
 
     # If path is a directory
     elif os.path.isdir(in_path):
-        return [file_name for file_name in glob.glob(in_path+"**/*.json", recursive=True)]
+        return [file_name for file_name in glob.glob(in_path+"/**/*.json", recursive=True)]
     
     # Other?
     else:

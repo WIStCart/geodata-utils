@@ -14,6 +14,14 @@ solr instances:
     username: "yourusername"
     password: "yourpassword"
 
+error-checks:
+  properties-not-null: ["dc_title_s", "dc_identifier_s", "layer_slug_s", "solr_geom", "dct_provenance_s", "dc_rights_s", "geoblacklight_version", "dc_creator_sm", "dc_description_s", "dct_references_s", "dct_temporal_sm", "solr_year_i", "layer_modified_dt"]
+  identifier-layer-slug-match: true
+  temportal-contains-solr-year: true
+  title-contains-solr-year: true
+  references-contains-solr-year: true
+  existing-uid: true
+
 log:
   version: 1
   disable_existing_loggers: true
@@ -22,9 +30,9 @@ log:
       (): "geodatautils.logging_config.DefaultIndent"
   formatters:
     default:
-      format: "%(asctime)s [%(levelname)s]%(indent)s%(message)s"
+      format: "%(asctime)s [%(levelname)s]%(indent)s%(label)s%(message)s"
     simple:
-      format: "%(indent)s%(message)s"
+      format: "%(indent)s%(label)s%(message)s"
   handlers:
     console:
       class: logging.StreamHandler
@@ -48,7 +56,9 @@ log:
       level: INFO
       handlers: [console, file]
 
-metadata-schemas:
-  geoblacklight-aardvark: geoblacklight-schema-aardvark.json
-  geoblacklight-1: geoblacklight-schema-1.0.json
-  geoblacklight-1-no_enum: geoblacklight-schema-1.0-no_enum.json
+metadata-schema:
+  options:
+    geoblacklight-aardvark: geoblacklight-schema-aardvark.json
+    geoblacklight-1: geoblacklight-schema-1.0.json
+    geoblacklight-1-wisc: geoblacklight-schema-1.0-wisc.json
+  default: geoblacklight-1-wisc
