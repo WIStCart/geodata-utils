@@ -35,7 +35,7 @@ def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadat
 
     logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
 
-    # For each file
+    # Check each file for errors
     for file_name in file_list:
 
         # Log the file path
@@ -56,7 +56,7 @@ def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadat
 
         logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
         
-        # For each file
+        # Upload each file
         for file_name in file_list:
             """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
             structure. However, it allows us to minimize the risk of using too much memory while
