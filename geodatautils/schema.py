@@ -72,7 +72,7 @@ def error_check(data:dict, solr:Solr) -> bool:
             errors = True
 
     # Check that dct_temporal_sm contains solr_year_i
-    error_check_name = 'temportal-contains-solr-year'
+    error_check_name = 'temporal-contains-solr-year'
     if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dct_temporal_sm'], error_check_name):
         if not any(str(data['solr_year_i']) in item for item in data['dct_temporal_sm']):
             logging.error("'dct_temporal_sm' does not contain 'solr_year_i'", extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error_check_name)})
