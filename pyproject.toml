@@ -24,6 +24,11 @@ dynamic = ["version"]
 
 [project.scripts]
 update_solr = "geodatautils.interfaces:update_solr"
+gu_config = "geodatautils.interfaces:gu_config"
+
+[tool.setuptools.packages.find]
+where = ['.']
+include = ['geodatautils']
 
 [tool.setuptools.package-data]
 "geodatautils.config" = ["config-template.yml"]
