@@ -16,7 +16,7 @@ from .solr import Solr
 from . import schema
 
 
-def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadata-schema']['default']) -> None:
+def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata_schema:str=config['metadata-schema']['default']) -> None:
     """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
@@ -54,8 +54,16 @@ def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadat
     # If no errors
     if not errors:
 
-        logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
-        
+        # Confirm upload if desired
+        if confirm_action:
+            confirm = input("Are you sure you want to upload {} record{} to instance {}? (y/N)".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+            if confirm.lower() != "y": 
+                logging.info("Operation aborted by user.")
+                return
+
+        else:
+            logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+
         # Upload each file
         for file_name in file_list:
             """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code

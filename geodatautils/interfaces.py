@@ -68,7 +68,7 @@ def update_solr():
 
     # Run tools
     if args.add:
-        geodatautils.manage.add(args.add, solr_instance_name=args.instance)
+        geodatautils.manage.add(args.add, solr_instance_name=args.instance, confirm_action=True)
     elif args.purge:
         geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*", confirm_action=True)
     elif args.delete:
