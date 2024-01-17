@@ -20,6 +20,13 @@ from .solr import Solr
 
 
 def empty_missing(data:dict, fields:Union[str, list], label:str=None) -> bool:
+    """Check if a required fields are present in geoblacklight JSON.
+
+    Arguments:
+    data (dict) -- contents of the geoblacklight JSON file
+    fields (str|list) -- field name or list of field names
+    label (str) -- line label used in logging
+    """
     
     # If fields is a string, recast to list
     if type(fields) == str:
