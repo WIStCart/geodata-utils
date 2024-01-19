@@ -94,15 +94,13 @@ def error_check(data:dict, solr:Solr) -> bool:
             logging.debug("'{}', '{}'".format(data['dc_title_s'], data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
             errors = True
 
-    # Check that dct_references_s['http://schema.org/downloadUrl\'] contains solr_year_i
+    # Check that dct_references_s contains solr_year_i
     error_check_name = 'references-contains-solr-year'
     if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dct_references_s'], error_check_name):
-        regex = '(?<=downloadUrl":").+?([^\/]+?)(?=")'
-        matches = re.findall(regex, data['dct_references_s'])
 
-        if not any(str(data['solr_year_i']) in match for match in matches):
-            logging.error("""'dct_references_s["http://schema.org/downloadUrl"]' does not contain 'solr_year_i'""", extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error_check_name)})
-            logging.debug("{}, '{}'".format(matches, data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
+        if not str(data['solr_year_i']) in data['dct_references_s']:
+            logging.error("""'dct_references_s' does not contain 'solr_year_i'""", extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error_check_name)})
+            logging.debug("{}, '{}'".format(data['dct_references_s'], data['solr_year_i']), extra={'indent': LogFormat.indent(3)})
             errors = True
 
     # Check for existing UID (`dc_identifier_s`) in current Solr index
