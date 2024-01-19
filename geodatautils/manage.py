@@ -96,7 +96,7 @@ def delete(solr_instance_name:str, query:str, confirm_action:bool=False) -> None
     # Get number of records
     """Note: this is vulnerable to time-of-check time-of-use (TOCTOU) errors
     but there is no other way to report how many records will be deleted."""
-    raw_response = solr.select(q=query)
+    raw_response = solr.select(q=query, rows=0)
     num_found = raw_response['response']['numFound']
 
     # Exit if no records to delete
@@ -106,7 +106,7 @@ def delete(solr_instance_name:str, query:str, confirm_action:bool=False) -> None
 
     # List matching records
     logging.info("{} record{} will be deleted".format(num_found, ("" if num_found==1 else "s")))
-    for doc in raw_response['response']['docs']:
+    for doc in solr.select(q=query, rows=num_found, fl='dc_identifier_s')['response']['docs']:
         logging.info(doc['dc_identifier_s'], extra={'indent': LogFormat.indent(1, tree=True)})
     
     # Confirm deletion if desired
