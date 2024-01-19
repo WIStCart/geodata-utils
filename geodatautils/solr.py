@@ -65,7 +65,7 @@ class Solr:
         headers = {"Content-Type":"application/json"}
         
         # Post records to solr
-        raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password))
+        raw_response = requests.post(update_url, data=str(data).encode(), headers=headers, auth=(self.username, self.password))
         
         return raw_response
         
