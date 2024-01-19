@@ -22,6 +22,9 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
 
+    # Initialize records store, store records so they can be uploaded at the end
+    records = []
+
     # Initialize solr instance
     solr = Solr(solr_instance_name)
 
@@ -41,8 +44,9 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         # Log the file path
         logging.info(file_name, extra={'indent': LogFormat.indent(1)})
 
-        # Open the file
+        # Open the file and add to records
         data = open_json(file_name)
+        records.append(data)
 
         # Validate schema
         if not schema.validate(data, metadata_schema):
@@ -50,7 +54,7 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
 
         # Check for errors
         errors = schema.error_check(data, solr) or errors
-    
+
     # If no errors
     if not errors:
 
@@ -61,26 +65,24 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
                 logging.info("Operation aborted by user.")
                 return
 
+            logging.debug("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+        
         else:
             logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
 
-        # Upload each file
+        # Log file names that will be uploaded
         for file_name in file_list:
-            """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
-            structure. However, it allows us to minimize the risk of using too much memory while
-            also checking all datasets before uploading."""
-
+            
             # Log the file path
-            logging.info(file_name, extra={'indent': LogFormat.indent(1)})
+            logging.debug(file_name, extra={'indent': LogFormat.indent(1)})
 
-            # Open the file
-            data = open_json(file_name)
+        # Update solr index
+        """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
+        structure because we check Solr for duplicates and later upload."""
+        raw_response = solr.update(str(records))
 
-            # Update solr index
-            raw_response = solr.update(str([data]))
-
-            # Raise any errors
-            raw_response.raise_for_status()
+        # Raise any errors
+        raw_response.raise_for_status()
         
         logging.info("Successfully uploaded {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
 
