@@ -29,13 +29,14 @@ class Solr:
 
         return raw_response
 
-    def select(self, q:str='', fl:str='') -> dict:
+    def select(self, q:str='', rows:int=None, fl:str='') -> dict:
         """Select records based on query and field list."""
 
         select_url = urljoin(self.url, 'select/')
 
         parameters = [
             ('q', q),
+            ('rows', rows),
             ('fl', fl)
         ]
 
