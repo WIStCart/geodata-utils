@@ -107,7 +107,7 @@ def error_check(data:dict, solr:Solr) -> bool:
     error_check_name = 'existing-uid'
     if config['error-checks'][error_check_name] and not empty_missing(data, ['dc_identifier_s'], error_check_name):
         raw_response = solr.select(q=data['dc_identifier_s'])
-        records_found = raw_response['response']['numFound']
+        records_found = raw_response.json()['response']['numFound']
         if records_found > 0:
             logging.error("""'dc_identifier_s' already exists in the Solr index.""", extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error_check_name)})
             logging.debug("{} records found for '{}'".format(records_found, data['dc_identifier_s']), extra={'indent': LogFormat.indent(3)})

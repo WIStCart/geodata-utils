@@ -20,7 +20,7 @@ class Solr:
         self.username = config['solr instances'][instance_name]['username']
         self.password = config['solr instances'][instance_name]['password']
 
-    def delete(self, q:str="*:*") -> dict:
+    def delete(self, q:str="*:*") -> requests.models.Response:
         """Delete records based on query."""
 
         data = str({'delete': {'query': q}})
@@ -29,7 +29,7 @@ class Solr:
 
         return raw_response
 
-    def select(self, q:str='', rows:int=None, fl:str='') -> dict:
+    def select(self, q:str='', rows:int=None, fl:str='') -> requests.models.Response:
         """Select records based on query and field list."""
 
         select_url = urljoin(self.url, 'select/')
@@ -43,12 +43,9 @@ class Solr:
         # Query solr instance
         raw_response = requests.get(select_url, params=parameters, auth=(self.username, self.password))
 
-        # Raise any errors
-        raw_response.raise_for_status()
-
-        return raw_response.json()
+        return raw_response
     
-    def update(self, data:str, commit:bool=True) -> dict:
+    def update(self, data:str, commit:bool=True) -> requests.models.Response:
         """Use supplied list of records to update Solr instance."""
 
         # Build parameters
@@ -70,8 +67,5 @@ class Solr:
         # Post records to solr
         raw_response = requests.post(update_url, data=str(data), headers=headers, auth=(self.username, self.password))
         
-        # Raise any errors
-        raw_response.raise_for_status()
-        
-        return raw_response.json()
+        return raw_response
         
