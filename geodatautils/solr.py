@@ -5,7 +5,7 @@ Connect to a Solr instance so that you can select or update documents.
 
 
 import requests  # I chose requests over urllib because although it adds another dependency, it greatly simplifies working with solr
-
+from requests.compat import urljoin
 from geodatautils import config
 
 
@@ -66,7 +66,7 @@ class Solr:
     def select(self, q:str='*:*', fq:str=None, rows:int=None, fl:str=None) -> requests.models.Response:
         """Select records based on query and field list."""
 
-        select_url = requests.compat.urljoin(self.url, 'select/')
+        select_url = urljoin(self.url, 'select/')
 
         parameters = [
             ('q', q),
