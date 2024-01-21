@@ -161,16 +161,6 @@ def error_check(records:list[Record], solr:Solr) -> bool:
             logging.error("Aborted UID check because at least one UID is empty or missing from an input record.", extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
             errors = True
 
-
-        # data = record.data
-        # if config['error-checks'][error_check_name] and not empty_missing(data, ['dc_identifier_s']):
-        #     raw_response = solr.select(q=data['dc_identifier_s'])
-        #     records_found = raw_response.json()['response']['numFound']
-        #     if records_found > 0:
-        #         logging.error("""'dc_identifier_s' already exists in the Solr index.""", extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error_check_name)})
-        #         logging.debug("{} records found for '{}'".format(records_found, data['dc_identifier_s']), extra={'indent': LogFormat.indent(3)})
-        #         errors = True
-
     return errors
 
 
