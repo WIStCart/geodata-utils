@@ -10,7 +10,7 @@ __version__ = 1.1
 import logging
 
 from geodatautils import config
-from .helpers import create_file_list, open_json
+from .helpers import create_file_list, open_json, Record
 from .logging_config import LogFormat
 from .solr import Solr
 from . import schema
@@ -36,26 +36,25 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         logging.info("No documents found in '{}'; exiting.".format(in_path))
         return
 
-    logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
+    # Load files into records
+    logging.info("Opening {} documents.".format(len(file_list)))
+    for filepath in file_list:
 
-    # Check each file for errors
-    for file_name in file_list:
+        # Open the file
+        data = open_json(filepath)
 
-        # Log the file path
-        logging.info(file_name, extra={'indent': LogFormat.indent(1)})
+        # Add record to records
+        records.append(Record(data, filepath=filepath))
 
-        # Open the file and add to records
-        data = open_json(file_name)
-        records.append(data)
+    # Validate schema of records
+    logging.info("Validating schema of {} documents.".format(len(file_list)))
+    errors = schema.validate(records, metadata_schema) or errors
 
-        # Validate schema
-        if not schema.validate(data, metadata_schema):
-            errors = True
+    # Check for errors in records
+    logging.info("Checking {} documents for errors.".format(len(file_list)))
+    errors = schema.error_check(records, solr) or errors
 
-        # Check for errors
-        errors = schema.error_check(data, solr) or errors
-
-    # If no errors
+    # Upload records if no errors
     if not errors:
 
         # Confirm upload if desired
@@ -65,7 +64,7 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
                 logging.info("Operation aborted by user.")
                 return
 
-            logging.debug("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+            logging.debug("User confirmed upload. Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
         
         else:
             logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
@@ -79,7 +78,8 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         # Update solr index
         """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
         structure because we check Solr for duplicates and later upload."""
-        raw_response = solr.update(str(records))
+        data = list(map(lambda record: record.data, records))
+        raw_response = solr.update(data)
 
         # Raise any errors
         raw_response.raise_for_status()

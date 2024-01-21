@@ -9,6 +9,53 @@ import logging
 import glob
 import json
 
+from .logging_config import LogFormat
+
+
+class Error:
+    """An error contains an error message and a debug message."""
+
+    def __init__(self, label:str, msg:str, debug:str):
+        self.label = label
+        self.msg = msg
+        self.debug = debug
+
+class Record:
+    """Defines a record with a file path and data (JSON contents)."""
+
+    def __init__(self, data:dict, filepath:str=None) -> None:
+        self.filepath = filepath
+        self.data = data
+        self.errors = []
+
+    @property
+    def has_errors(self) -> bool:
+        """True if record has errors."""
+        return (True if self.errors else False)
+
+    def add_error(self, label:str, msg:str, debug:str):
+        """Add an error to the record."""
+        self.errors.append(Error(label, msg, debug))
+
+    def log_record(self, level:str="debug"):
+        """Log the file name of the record."""
+        if level == "info":
+            logging.info(self.filepath, extra={'indent': LogFormat.indent(1)})
+        elif level == "debug":
+            logging.debug(self.filepath, extra={'indent': LogFormat.indent(1)})
+        else:
+            print("Level '{}' is not recognized. Must be 'info' or 'debug'.")
+    
+    def log_errors(self):
+        """Write errors to log."""
+
+        self.log_record(level="info")
+        
+        for error in self.errors:
+            if error.msg: 
+                logging.error(error.msg, extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error.label)})
+            if error.debug:
+                logging.debug(error.debug, extra={'indent': LogFormat.indent(3)})
 
 def create_file_list(in_path:str) -> list:
     """Given a path that could be a file or directory, return a list of all 
