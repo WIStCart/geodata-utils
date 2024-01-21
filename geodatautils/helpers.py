@@ -27,15 +27,25 @@ class Record:
         self.filepath = filepath
         self.data = data
         self.errors = []
+        self.warnings = []
 
     @property
     def has_errors(self) -> bool:
         """True if record has errors."""
         return (True if self.errors else False)
+    
+    @property
+    def has_warnings(self) -> bool:
+        """True if record has warnings."""
+        return (True if self.warnings else False)
 
     def add_error(self, label:str, msg:str, debug:str):
         """Add an error to the record."""
         self.errors.append(Error(label, msg, debug))
+    
+    def add_warning(self, label:str, msg:str, debug:str):
+        """Add an warning to the record."""
+        self.warnings.append(Error(label, msg, debug))
 
     def log_record(self, level:str="debug"):
         """Log the file name of the record."""
@@ -45,7 +55,7 @@ class Record:
             logging.debug(self.filepath, extra={'indent': LogFormat.indent(1)})
         else:
             print("Level '{}' is not recognized. Must be 'info' or 'debug'.")
-    
+
     def log_errors(self):
         """Write errors to log."""
 
@@ -56,6 +66,17 @@ class Record:
                 logging.error(error.msg, extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(error.label)})
             if error.debug:
                 logging.debug(error.debug, extra={'indent': LogFormat.indent(3)})
+    
+    def log_warnings(self):
+        """Write warnings to log."""
+
+        self.log_record(level="info")
+        
+        for warning in self.warnings:
+            if warning.msg: 
+                logging.warning(warning.msg, extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label(warning.label)})
+            if warning.debug:
+                logging.debug(warning.debug, extra={'indent': LogFormat.indent(3)})
 
 def create_file_list(in_path:str) -> list:
     """Given a path that could be a file or directory, return a list of all 
