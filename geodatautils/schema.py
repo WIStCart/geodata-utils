@@ -106,13 +106,15 @@ def error_check(records:list[Record], solr:Solr) -> bool:
         if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dct_references_s']):
 
             if not str(data['solr_year_i']) in data['dct_references_s']:
-                record.add_error(error_check_name, """'dct_references_s' does not contain 'solr_year_i'""", "{}, '{}'".format(data['dct_references_s'], data['solr_year_i']))
+                record.add_warning(error_check_name, """'dct_references_s' does not contain 'solr_year_i'""", "{}, '{}'".format(data['dct_references_s'], data['solr_year_i']))
         
-        # Log any errors else log the record for debug
+        # Log any errors or warnings else log the record for debug
         if record.has_errors:
             record.log_errors()
             errors = True
-        else:
+        if record.has_warnings:
+            record.log_warnings()
+        if not record.has_errors and record.has_warnings:
             record.log_record()
 
     # Check for existing UID (`dc_identifier_s`) in current Solr index
