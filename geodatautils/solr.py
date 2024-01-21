@@ -54,19 +54,6 @@ class Solr:
             
         return chunks
     
-    def urljoin(self, *args:str) -> str:
-        """Join any number of URL fragments and return joined url."""
-
-        url = args[0]
-        for i in range(1,len(args)):
-            url = requests.compat.urljoin(url, args[i])
-
-        return url
-    
-    def urlencode(self, url:str, safe:str='/?=&') -> str:
-        """Convert URL into URL encoded format."""
-        return requests.utils.quote(url.encode(), safe=safe)
-
     def delete(self, q:str="*:*") -> requests.models.Response:
         """Delete records based on query."""
 
@@ -79,7 +66,7 @@ class Solr:
     def select(self, q:str='*:*', fq:str=None, rows:int=None, fl:str=None) -> requests.models.Response:
         """Select records based on query and field list."""
 
-        select_url = self.urljoin(self.url, 'select/')
+        select_url = requests.compat.urljoin(self.url, 'select/')
 
         parameters = [
             ('q', q),

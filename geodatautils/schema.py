@@ -124,16 +124,12 @@ def error_check(records:list[Record], solr:Solr) -> bool:
             
             # Build UID list
             uid_list = list(map(lambda record: record.data['dc_identifier_s'], records))
-            
-            # Get filter query chunk target size
-            reserved_bytes = len(solr.urljoin(solr.url, solr.urlencode("select/?q=*:*&fq=dc_identifier_s:()")))
-            target_fq_size = solr.max_uri_size - reserved_bytes
 
             # Initialize records store
             records_found = []
 
             # Break filter query into chunks (neccessary when processing large numbers of JSONs all at once)
-            fq_chunks = solr.build_query_chunks(uid_list, target_fq_size)
+            fq_chunks = solr.build_query_chunks(uid_list, solr.max_uri_size)
 
             # Query each chunk
             for fq_chunk in fq_chunks:
