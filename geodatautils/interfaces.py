@@ -7,6 +7,7 @@ Command line interfaces for Geodata utilites.
 import argparse
 import logging
 import os
+import shutil
 
 import geodatautils.manage
 from geodatautils import config
@@ -23,6 +24,10 @@ def gu_config():
         "-e", "--edit",
         action='store_true',
         help="Open Geodata Utilities config file for editing.")
+    group.add_argument(
+        "-i", "--init",
+        action='store_true',
+        help="Initiate Geodata Utilities config file and open for editing.")
 
     # Parse arguments
     args = parser.parse_args()
@@ -32,6 +37,16 @@ def gu_config():
 
         # Open config text editor
         config_path = os.path.join(os.path.dirname(geodatautils.__file__), "config", "config.yml")
+        os.system(config_path)
+    
+    elif args.init:
+
+        # Copy template
+        template_path = os.path.join(os.path.dirname(geodatautils.__file__), "config", "config-template.yml")
+        config_path = os.path.join(os.path.dirname(geodatautils.__file__), "config", "config.yml")
+        shutil.copyfile(template_path, config_path)
+
+        # Open config text editor
         os.system(config_path)
 
 def update_solr():
