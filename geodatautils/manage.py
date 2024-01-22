@@ -4,7 +4,7 @@ Manage Solr instance by updating the index.
 """
 
 
-__version__ = 1.1
+__version__ = 2.0
 
 
 import logging
