@@ -7,9 +7,9 @@ Command line interfaces for Geodata utilites.
 import argparse
 import logging
 
-import geodatautils.manage
 from geodatautils import config
 from . import config_tools
+from . import manage
 
 
 def gu_config():
@@ -81,7 +81,7 @@ def update_solr():
         help="[Deprecated] Recurse into subfolders when adding JSON files.")
 
     # Print version
-    parser.add_argument("--version", action="version", version="%(prog)s - Version {}".format(geodatautils.manage.__version__))
+    parser.add_argument("--version", action="version", version="%(prog)s - Version {}".format(manage.__version__))
 
     # Parse arguments
     args = parser.parse_args()
@@ -95,14 +95,14 @@ def update_solr():
 
     # Run tools
     if args.add:
-        geodatautils.manage.add(args.add, solr_instance_name=args.instance, confirm_action=True)
+        manage.add(args.add, solr_instance_name=args.instance, confirm_action=True)
     elif args.purge:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*", confirm_action=True)
+        manage.delete(solr_instance_name=args.instance, query="*:*", confirm_action=True)
     elif args.delete:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query="layer_slug_s:{}".format(args.delete), confirm_action=True)
+        manage.delete(solr_instance_name=args.instance, query="layer_slug_s:{}".format(args.delete), confirm_action=True)
     elif args.delete_collection:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_isPartOf_sm:"{}"'.format(args.delete_collection), confirm_action=True)
+        manage.delete(solr_instance_name=args.instance, query='dct_isPartOf_sm:"{}"'.format(args.delete_collection), confirm_action=True)
     elif args.delete_provenance:
-        geodatautils.manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance), confirm_action=True)
+        manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance), confirm_action=True)
     else:  # This shouldn't happen
         print("No tool selected")
