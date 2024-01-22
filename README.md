@@ -3,22 +3,14 @@
 Utilities for managing GeoData@Wisconsin.
 
 
+## Manange Installation
 
-## Setup
-
-If you are on Windows and have ArcGIS Pro installed you can follow the directions below. For all other cases, follow the directions for a [manual setup](docs/manual-setup.md).
-
-Open the "Python Command Prompt" that comes with ArcGIS Pro and run the following:
-
-```bash
-cd /d %USERPROFILE%/Desktop && curl -LJO https://github.com/WIStCart/geodata-utils/archive/main.tar.gz && tar -xf geodata-utils-main.tar.gz --strip=1 "geodata-utils-main/install scripts" && cd "install scripts" && install.bat && cd .. && del /s /q "geodata-utils-main.tar.gz" && rd /s /q "install scripts"
-```
-
-When notepad opens, edit the 'solr instances' to fit your needs and save. You can then close notepad.
+See [Manage Geodata Utilities Installation](docs/manage-installation.md) for information on installing, updating, and uninstalling Geodata Utils and virtual environments.
 
 
+## Usage
 
-## How to Reopen Environment
+### Reopen Environment
 
 When you need to open this environment in the future, open "Python Command Prompt" and run:
 
@@ -26,19 +18,13 @@ When you need to open this environment in the future, open "Python Command Promp
 activate geodata-utils
 ```
 
+### Config
 
+See [Configure Geodata Utilities](docs/config.md) to learn about configuring your install. You can configure Solr connections, what error checks are run, logging, and metadata schemas. 
 
-## Update `geodatautils` Library
+### Tools
 
-```bash
-python -m pip install --upgrade https://github.com/WIStCart/geodata-utils/archive/main.tar.gz
-```
-
-
-
-## Tools
-
-### `update_solr`
+#### `update_solr`
 
 ```text
 update_solr [-h] -i INSTANCE (-a ADD | -d DELETE | -dc DELETE_COLLECTION | -dp DELETE_PROVENANCE | -p) 
@@ -68,38 +54,31 @@ update_solr -i test -a record.json
 # Add records in directory and all subdirectories
 update_solr -i test -a path/to/directory/
 
+# Delete a record where layer_slug_s is a45fea1d-a45a-4cb4-85d8-4054ef70fd7f
+update_solr -i test -d a45fea1d-a45a-4cb4-85d8-4054ef70fd7f
+
+# Delete records that are part of a specific collection
+update_solr -i test -dc Statewide
+
+# Delete records of a specified provenance
+update_solr -i test -dp "Some Agency"
+
 # Purge all records
 update_solr -i test -p
 ```
 
+#### `gu_config`
 
+```text
+gu_config [-h] -e
 
-## Development Mode
-
-Clone the repository and change and run:
-
-```bash
-python -m pip install --editable .
+options:
+  -h, --help  show this help message and exit
+  -e, --edit  Open Geodata Utilities config file for editing.
 ```
 
-
-
-## Uninstall
-
-To uninstall environment:
-
+Examples:
 ```bash
-conda env remove --name geodata-utils
-```
-
-You can check what environments are installed with:
-
-```bash
-conda env list
-```
-
-If you just want to uninstall the `geodatautils` python library run:
-
-```bash
-python -m pip uninstall geodatautils
+# Open config file for editing
+gu_config -e
 ```

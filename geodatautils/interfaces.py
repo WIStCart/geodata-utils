@@ -6,10 +6,33 @@ Command line interfaces for Geodata utilites.
 
 import argparse
 import logging
+import os
 
 import geodatautils.manage
 from geodatautils import config
 
+
+def gu_config():
+    """Configure Geodata Utilites"""
+
+    # Create argument parser
+    parser = argparse.ArgumentParser()
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "-e", "--edit",
+        action='store_true',
+        help="Open Geodata Utilities config file for editing.")
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Run tools
+    if args.edit:
+
+        # Open config text editor
+        config_path = os.path.join(os.path.dirname(geodatautils.__file__), "config", "config.yml")
+        os.system(config_path)
 
 def update_solr():
     """Update Solr
@@ -68,7 +91,7 @@ def update_solr():
 
     # Run tools
     if args.add:
-        geodatautils.manage.add(args.add, solr_instance_name=args.instance)
+        geodatautils.manage.add(args.add, solr_instance_name=args.instance, confirm_action=True)
     elif args.purge:
         geodatautils.manage.delete(solr_instance_name=args.instance, query="*:*", confirm_action=True)
     elif args.delete:

@@ -4,23 +4,26 @@ Manage Solr instance by updating the index.
 """
 
 
-__version__ = 1.1
+__version__ = 2.0
 
 
 import logging
 
 from geodatautils import config
-from .helpers import create_file_list, open_json
+from .helpers import create_file_list, open_json, Record
 from .logging_config import LogFormat
 from .solr import Solr
 from . import schema
 
 
-def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadata-schema']['default']) -> None:
+def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata_schema:str=config['metadata-schema']['default']) -> None:
     """Update a Solr instance with the given GeoBlacklight JSONs."""
 
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
+
+    # Initialize records store, store records so they can be uploaded at the end
+    records = []
 
     # Initialize solr instance
     solr = Solr(solr_instance_name)
@@ -33,43 +36,53 @@ def add(in_path:str, solr_instance_name:str, metadata_schema:str=config['metadat
         logging.info("No documents found in '{}'; exiting.".format(in_path))
         return
 
-    logging.info("Checking {} documents in {}.".format(len(file_list), in_path))
-
-    # For each file
-    for file_name in file_list:
-
-        # Log the file path
-        logging.info(file_name, extra={'indent': LogFormat.indent(1)})
+    # Load files into records
+    logging.info("Opening {} documents.".format(len(file_list)))
+    for filepath in file_list:
 
         # Open the file
-        data = open_json(file_name)
+        data = open_json(filepath)
 
-        # Validate schema
-        if not schema.validate(data, metadata_schema):
-            errors = True
+        # Add record to records
+        records.append(Record(data, filepath=filepath))
 
-        # Check for errors
-        errors = schema.error_check(data, solr) or errors
-    
-    # If no errors
+    # Validate schema of records
+    logging.info("Validating schema of {} documents.".format(len(file_list)))
+    errors = schema.validate(records, metadata_schema) or errors
+
+    # Check for errors in records
+    logging.info("Checking {} documents for errors.".format(len(file_list)))
+    errors = schema.error_check(records, solr) or errors
+
+    # Upload records if no errors
     if not errors:
 
-        logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+        # Confirm upload if desired
+        if confirm_action:
+            confirm = input("Are you sure you want to upload {} record{} to instance {}? (y/N)".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+            if confirm.lower() != "y": 
+                logging.info("Operation aborted by user.")
+                return
+
+            logging.debug("User confirmed upload. Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
         
-        # For each file
+        else:
+            logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
+
+        # Log file names that will be uploaded
         for file_name in file_list:
-            """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
-            structure. However, it allows us to minimize the risk of using too much memory while
-            also checking all datasets before uploading."""
-
+            
             # Log the file path
-            logging.info(file_name, extra={'indent': LogFormat.indent(1)})
+            logging.debug(file_name, extra={'indent': LogFormat.indent(1)})
 
-            # Open the file
-            data = open_json(file_name)
+        # Update solr index
+        """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
+        structure because we check Solr for duplicates and later upload."""
+        data = list(map(lambda record: record.data, records))
+        raw_response = solr.update(data)
 
-            # Update solr index
-            solr.update(str([data]))
+        # Raise any errors
+        raw_response.raise_for_status()
         
         logging.info("Successfully uploaded {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
 
@@ -88,8 +101,9 @@ def delete(solr_instance_name:str, query:str, confirm_action:bool=False) -> None
     # Get number of records
     """Note: this is vulnerable to time-of-check time-of-use (TOCTOU) errors
     but there is no other way to report how many records will be deleted."""
-    raw_response = solr.select(q=query)
-    num_found = raw_response['response']['numFound']
+    raw_response = solr.select(q=query, rows=0)
+    raw_response.raise_for_status()  # Raise any errors
+    num_found = raw_response.json()['response']['numFound']
 
     # Exit if no records to delete
     if num_found == 0:
@@ -98,8 +112,10 @@ def delete(solr_instance_name:str, query:str, confirm_action:bool=False) -> None
 
     # List matching records
     logging.info("{} record{} will be deleted".format(num_found, ("" if num_found==1 else "s")))
-    for doc in raw_response['response']['docs']:
-        logging.info(doc['dc_identifier_s'], extra={'indent': LogFormat.indent(1, tree=True)})
+    raw_response = solr.select(q=query, rows=num_found, fl='dc_identifier_s')
+    raw_response.raise_for_status()  # Raise any errors
+    for doc in raw_response.json()['response']['docs']:
+        logging.debug(doc['dc_identifier_s'], extra={'indent': LogFormat.indent(1, tree=True)})
     
     # Confirm deletion if desired
     if confirm_action:

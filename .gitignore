@@ -5,6 +5,6 @@
 config.yml
 
 # Development mode files
-GeoData_Utils*/*
+geodatautils.egg-info
 
 temp/*
