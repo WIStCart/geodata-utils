@@ -163,7 +163,6 @@ def error_check(records:list[Record], solr:Solr) -> bool:
 
     return errors
 
-
 def validate(records:list[Record], schema_name:str) -> bool:
     """Validate GeoBlacklight JSON schema.
     

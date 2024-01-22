@@ -103,4 +103,3 @@ class Solr:
         raw_response = requests.post(update_url, data=str(data).encode(), headers=headers, auth=(self.username, self.password))
         
         return raw_response
-        

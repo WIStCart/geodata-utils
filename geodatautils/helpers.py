@@ -105,7 +105,6 @@ def create_file_list(in_path:str) -> list:
         logging.error("'{}' is not a file or directory", in_path)
         raise SystemExit
 
-
 def open_json(file_path:str) -> dict:
     """Given a file path to a JSON file, return the JSON loaded into a dictionary."""
 
