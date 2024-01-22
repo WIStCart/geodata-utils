@@ -16,13 +16,15 @@ from importlib.resources import files
 
 import yaml
 
+from . import config_tools
+
 
 # Set config path
 config_path = files('geodatautils.config').joinpath('config.yml')
 
 # Confirm config exists, if not initiate config
 if not os.path.exists(config_path):
-    os.system("gu_config -i")
+    config_tools.init()
 
 # Read in Config
 with open(config_path, 'r') as f:
