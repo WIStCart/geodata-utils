@@ -70,15 +70,19 @@ update_solr -i test -p
 #### `gu_config`
 
 ```text
-gu_config [-h] -e
+gu_config [-h] (-e | -i)
 
 options:
   -h, --help  show this help message and exit
   -e, --edit  Open Geodata Utilities config file for editing.
+  -i, --init  Initiate Geodata Utilities config file and open for editing.
 ```
 
 Examples:
 ```bash
 # Open config file for editing
 gu_config -e
+
+# Initialize config file (use copy of template)
+gu_config --init
 ```
