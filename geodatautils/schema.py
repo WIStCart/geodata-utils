@@ -175,18 +175,21 @@ def validate(records:dict[str, Record], schema_name:str) -> bool:
     # Initialize error tracker
     errors = False
 
+    # Load schema from config
+    schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name])
+    schema = open_json(schema_path)
+
+    # Set validator
+    validator = validators.validator_for(schema)
+    v = validator(schema)
+
+    # Log validator in debug
+    logging.debug("Using '{}' validator".format(validator.__name__), extra={'indent': LogFormat.indent(2)})
+
     # Validate each record
     for uid, record in records.items():
 
         data = record.data
-
-        # Load schema from config
-        schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name])
-        schema = open_json(schema_path)
-
-        # Set validator
-        validator = validators.validator_for(schema)
-        v = validator(schema)
 
         # Validate schema
         try:
@@ -196,19 +199,15 @@ def validate(records:dict[str, Record], schema_name:str) -> bool:
 
         # If schema of data is invlaid
         if not v.is_valid(data):
-
-            # Log the file path
-            logging.info(record.filepath, extra={'indent': LogFormat.indent(1)})
-
-            # Log validator in debug
-            logging.debug("Using '{}' validator".format(validator.__name__), extra={'indent': LogFormat.indent(2)})
             
-            # Log errors
+            # Add errors to records
             for error in v.iter_errors(data):
                 for suberror in sorted(error.context, key=lambda e: e.schema_path)[:-1]:
-                    logging.error("{}: {}".format(":".join(map(str,list(suberror.schema_path))), suberror.message), extra={'indent': LogFormat.indent(2, True), 'label': LogFormat.label("schema-validation")})
+                    msg = "{}: {}".format(":".join(map(str,list(suberror.schema_path))), suberror.message)
+                    record.add_error("schema-validation", msg, None)
 
             errors = True
+            record.log_errors()
         
         else: 
             # Log the file path
