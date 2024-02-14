@@ -151,7 +151,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
 
                 # Store any matching records for logging later
                 if raw_response.json()['response']['numFound']:
-                    records_found.append([doc['dc_identifier_s'] for doc in raw_response.json()['response']['docs']])
+                    records_found.extend([doc['dc_identifier_s'] for doc in raw_response.json()['response']['docs']])
 
             # Error if any matching records are found
             if records_found:
