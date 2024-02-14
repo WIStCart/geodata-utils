@@ -122,7 +122,12 @@ def error_check(records:list[Record], solr:Solr) -> bool:
     if config['error-checks'][error_check_name]:
 
         # Check that no UIDs are empty or missing
-        if not any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), records)):
+        if any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), records)):
+            logging.error("Aborted UID check because at least one UID is empty or missing from an input record.", extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
+            errors = True
+
+        # Proceed normally
+        else:
             
             # Build UID list
             uid_list = list(map(lambda record: record.data['dc_identifier_s'], records))
@@ -155,11 +160,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
                 for record_uid in records_found:
                     logging.debug(record_uid, extra={'indent': LogFormat.indent(2, tree=True)})
                 
-                errors = True
-    
-        else:
-            logging.error("Aborted UID check because at least one UID is empty or missing from an input record.", extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
-            errors = True
+                errors = True       
 
     return errors
 
