@@ -22,8 +22,8 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
 
-    # Initialize records store, store records so they can be uploaded at the end
-    records = []
+    # Initialize records store
+    records = {}
 
     # Initialize solr instance
     solr = Solr(solr_instance_name)
@@ -43,8 +43,8 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         # Open the file
         data = open_json(filepath)
 
-        # Add record to records
-        records.append(Record(data, filepath=filepath))
+        # Add record to records -> uid: Record()
+        records[data['dc_identifier_s']] = Record(data, filepath=filepath)
 
     # Validate schema of records
     logging.info("Validating schema of {} documents.".format(len(file_list)))

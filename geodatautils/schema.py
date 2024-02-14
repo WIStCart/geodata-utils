@@ -45,11 +45,11 @@ def empty_missing(data:dict, fields:Union[str, list]) -> str:
     # If no fields are empty or missing
     return None
 
-def error_check(records:list[Record], solr:Solr) -> bool:
+def error_check(records:dict[str, Record], solr:Solr) -> bool:
     """Check for errors in a GeoBlacklight JSON file.
     
     Arguments:
-    records (list[Record]) -- a list of Solr records
+    records (dict[str, Record]) -- a list of Solr records
     solr (Solr) -- initilized solr object (geodatautils.solr.Solr)
 
     Returns:
@@ -62,7 +62,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
     errors = False
 
     # For each record run checks
-    for record in records:
+    for uid, record in records.items():
 
         data = record.data
 
@@ -122,7 +122,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
     if config['error-checks'][error_check_name]:
 
         # Check that no UIDs are empty or missing
-        if any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), records)):
+        if any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), records.values())):
             logging.error("Aborted UID check because at least one UID is empty or missing from an input record.", extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
             errors = True
 
@@ -130,7 +130,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
         else:
             
             # Build UID list
-            uid_list = list(map(lambda record: record.data['dc_identifier_s'], records))
+            uid_list = list(map(lambda record: record.data['dc_identifier_s'], records.values()))
 
             # Initialize records store
             records_found = []
@@ -164,7 +164,7 @@ def error_check(records:list[Record], solr:Solr) -> bool:
 
     return errors
 
-def validate(records:list[Record], schema_name:str) -> bool:
+def validate(records:dict[str, Record], schema_name:str) -> bool:
     """Validate GeoBlacklight JSON schema.
     
     Returns:
@@ -176,7 +176,7 @@ def validate(records:list[Record], schema_name:str) -> bool:
     errors = False
 
     # Validate each record
-    for record in records:
+    for uid, record in records.items():
 
         data = record.data
 
