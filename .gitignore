@@ -8,3 +8,4 @@ config.yml
 geodatautils.egg-info
 
 temp/*
+.vscode/*
