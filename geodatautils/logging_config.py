@@ -21,14 +21,17 @@ class DefaultIndent(logging.Filter, ):
 class LogFormat:
     """Helper class to format log entries."""
 
-    def indent(level, tree=False):
+    @staticmethod
+    def indent(level:int, tree:bool=False):
         """Indent with tabs with the option of a tree prefix."""
         return "\t"*level*2 + ("└── " if tree else "")
 
+    @staticmethod
     def label(label:str):
         """Add label to log entry. E.g., '(some-function)'"""
         return "(" + label + ") "
     
+    @staticmethod
     def spaces(n):
         """Generate a specified number of spaces."""
         return " "*n
