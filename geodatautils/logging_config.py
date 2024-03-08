@@ -24,7 +24,7 @@ class LogFormat:
     @staticmethod
     def indent(level:int, tree:bool=False):
         """Indent with tabs with the option of a tree prefix."""
-        return "\t"*level*2 + ("└── " if tree else "")
+        return ("\t"*level if level else " ") + ("└── " if tree else "")
 
     @staticmethod
     def label(label:str):
