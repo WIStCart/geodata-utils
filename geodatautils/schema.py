@@ -13,7 +13,7 @@ from jsonschema import validators
 from jsonschema.exceptions import SchemaError
 
 from geodatautils import config
-from .helpers import open_json, Record
+from .helpers import open_json, RecordSet
 from .logging_config import LogFormat
 from .solr import Solr
 
@@ -45,11 +45,11 @@ def empty_missing(data:dict, fields:Union[str, list]) -> str:
     # If no fields are empty or missing
     return None
 
-def error_check(records:dict[str, Record], solr:Solr) -> bool:
+def error_check(record_set:RecordSet, solr:Solr) -> bool:
     """Check for errors in a GeoBlacklight JSON file.
     
     Arguments:
-    records (dict[str, Record]) -- a list of Solr records
+    record_set (RecordSet) -- a set of Solr records
     solr (Solr) -- initilized solr object (geodatautils.solr.Solr)
 
     Returns:
@@ -62,9 +62,12 @@ def error_check(records:dict[str, Record], solr:Solr) -> bool:
     errors = False
 
     # For each record run checks
-    for uid, record in records.items():
+    for uid, record in record_set.records.items():
 
         data = record.data
+
+        # Record record filename to log for debug
+        record.log_record(level='debug', indent=2)
 
         # Fields are not null
         if 'properties-not-null' in config['error-checks'] and type(config['error-checks']['properties-not-null']) == list:
@@ -108,21 +111,15 @@ def error_check(records:dict[str, Record], solr:Solr) -> bool:
             if not str(data['solr_year_i']) in data['dct_references_s']:
                 record.add_warning(error_check_name, """'dct_references_s' does not contain 'solr_year_i'""", "{}, '{}'".format(data['dct_references_s'], data['solr_year_i']))
         
-        # Log any errors or warnings else log the record for debug
         if record.has_errors:
-            record.log_errors()
             errors = True
-        if record.has_warnings:
-            record.log_warnings()
-        if not record.has_errors and record.has_warnings:
-            record.log_record()
 
     # Check for existing UID (`dc_identifier_s`) in current Solr index
     error_check_name = 'existing-uid'
     if config['error-checks'][error_check_name]:
 
         # Check that no UIDs are empty or missing
-        if any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), records.values())):
+        if any(map(lambda record: empty_missing(record.data, ['dc_identifier_s']), record_set.records.values())):
             logging.error("Aborted UID check because at least one UID is empty or missing from an input record.", extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
             errors = True
 
@@ -130,7 +127,7 @@ def error_check(records:dict[str, Record], solr:Solr) -> bool:
         else:
             
             # Build UID list
-            uid_list = list(map(lambda record: record.data['dc_identifier_s'], records.values()))
+            uid_list = list(record_set.records.keys())
 
             # Initialize records store
             records_found = []
@@ -144,7 +141,7 @@ def error_check(records:dict[str, Record], solr:Solr) -> bool:
                 filter_query = "dc_identifier_s:({})".format(fq_chunk)
 
                 # Query 
-                raw_response = solr.select(fq=filter_query, fl='dc_identifier_s', rows=len(records))
+                raw_response = solr.select(fq=filter_query, fl='dc_identifier_s', rows=len(fq_chunk))
 
                 # Raise any errors
                 raw_response.raise_for_status()
@@ -153,18 +150,20 @@ def error_check(records:dict[str, Record], solr:Solr) -> bool:
                 if raw_response.json()['response']['numFound']:
                     records_found.extend([doc['dc_identifier_s'] for doc in raw_response.json()['response']['docs']])
 
-            # Error if any matching records are found
+            # Add warnings to any matching records
             if records_found:
-                logging.error("{} matching records found in the {} index.".format(len(records_found), solr.name), extra={'indent': LogFormat.indent(1), 'label': LogFormat.label(error_check_name)})
-                
                 for record_uid in records_found:
-                    logging.debug(record_uid, extra={'indent': LogFormat.indent(2, tree=True)})
-                
-                errors = True       
+
+                    # Get record based on UID
+                    record = record_set.records[record_uid]
+
+                    # Add warning to record
+                    record.add_warning(error_check_name, "UID {} already exists in the {} index.".format(record_uid, solr.name), "")
+                      
 
     return errors
 
-def validate(records:dict[str, Record], schema_name:str) -> bool:
+def validate(record_set:RecordSet, schema_name:str) -> bool:
     """Validate GeoBlacklight JSON schema.
     
     Returns:
@@ -176,7 +175,7 @@ def validate(records:dict[str, Record], schema_name:str) -> bool:
     errors = False
 
     # Load schema from config
-    schema_path = files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name])
+    schema_path = str(files('geodatautils.config.schemas').joinpath(config['metadata-schema']['options'][schema_name]))
     schema = open_json(schema_path)
 
     # Set validator
@@ -187,7 +186,10 @@ def validate(records:dict[str, Record], schema_name:str) -> bool:
     logging.debug("Using '{}' validator".format(validator.__name__), extra={'indent': LogFormat.indent(2)})
 
     # Validate each record
-    for uid, record in records.items():
+    for uid, record in record_set.records.items():
+
+        # Log the file path for debug
+        record.log_record(level='debug', indent=2)
 
         data = record.data
 
@@ -207,10 +209,5 @@ def validate(records:dict[str, Record], schema_name:str) -> bool:
                     record.add_error("schema-validation", msg, None)
 
             errors = True
-            record.log_errors()
-        
-        else: 
-            # Log the file path
-            logging.debug(record.filepath, extra={'indent': LogFormat.indent(1)})
-    
+  
     return errors
