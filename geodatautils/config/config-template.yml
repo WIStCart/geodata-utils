@@ -17,8 +17,8 @@ solr instances:
 error-checks:
   properties-not-null: ["dc_title_s", "dc_identifier_s", "layer_slug_s", "solr_geom", "dct_provenance_s", "dc_rights_s", "geoblacklight_version", "dc_creator_sm", "dc_description_s", "dct_references_s", "dct_temporal_sm", "solr_year_i", "layer_modified_dt"]
   identifier-layer-slug-match: true
-  temporal-contains-solr-year: true
-  title-contains-solr-year: true
+  temporal-contains-solr-year: false
+  title-contains-solr-year: false
   references-contains-solr-year: false
   existing-uid: true
 
