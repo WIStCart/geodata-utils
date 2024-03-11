@@ -4,7 +4,7 @@ A set of utilities to manage the Wisconsin Geodata Geoblacklight instance.
 """
 
 
-__version__ = "1.2.1"
+__version__ = "1.3.0"
 __author__ = "Hayden Elza"
 __license__ = "GPL-3"
 
