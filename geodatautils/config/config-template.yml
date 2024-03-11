@@ -19,7 +19,7 @@ error-checks:
   identifier-layer-slug-match: true
   temporal-contains-solr-year: true
   title-contains-solr-year: true
-  references-contains-solr-year: true
+  references-contains-solr-year: false
   existing-uid: true
 
 log:
