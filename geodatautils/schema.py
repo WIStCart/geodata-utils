@@ -90,26 +90,6 @@ def error_check(record_set:RecordSet, solr:Solr) -> bool:
         if config['error-checks'][error_check_name] and not empty_missing(data, ['dc_identifier_s', 'layer_slug_s']):
             if data['dc_identifier_s'] != data['layer_slug_s']:
                 record.add_error(error_check_name, "'dc_identifier_s' and 'layer_slug_s' do not match", "'{}', '{}'".format(data['dc_identifier_s'], data['layer_slug_s']))
-                
-
-        # Check that dct_temporal_sm contains solr_year_i
-        error_check_name = 'temporal-contains-solr-year'
-        if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dct_temporal_sm']):
-            if not any(str(data['solr_year_i']) in item for item in data['dct_temporal_sm']):
-                record.add_error(error_check_name, "'dct_temporal_sm' does not contain 'solr_year_i'", "'{}', '{}'".format(data['dct_temporal_sm'], data['solr_year_i']))
-
-        # Check that dc_title_s contains solr_year_i 
-        error_check_name = 'title-contains-solr-year'
-        if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dc_title_s']):
-            if str(data['solr_year_i']) not in data['dc_title_s']:
-                record.add_error(error_check_name, "'dc_title_s' does not contain 'solr_year_i'", "'{}', '{}'".format(data['dc_title_s'], data['solr_year_i']))
-
-        # Check that dct_references_s contains solr_year_i
-        error_check_name = 'references-contains-solr-year'
-        if config['error-checks'][error_check_name] and not empty_missing(data, ['solr_year_i', 'dct_references_s']):
-
-            if not str(data['solr_year_i']) in data['dct_references_s']:
-                record.add_warning(error_check_name, """'dct_references_s' does not contain 'solr_year_i'""", "{}, '{}'".format(data['dct_references_s'], data['solr_year_i']))
         
         if record.has_errors:
             errors = True
