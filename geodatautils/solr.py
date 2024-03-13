@@ -80,7 +80,7 @@ class Solr:
 
         return raw_response
     
-    def update(self, data:str, commit:bool=True) -> requests.models.Response:
+    def update(self, data:bytes, commit:bool=True) -> requests.models.Response:
         """Use supplied list of records to update Solr instance."""
 
         # Build parameters
@@ -100,6 +100,6 @@ class Solr:
         headers = {"Content-Type":"application/json"}
         
         # Post records to solr
-        raw_response = requests.post(update_url, data=str(data).encode(), headers=headers, auth=(self.username, self.password))
+        raw_response = requests.post(update_url, data=data, headers=headers, auth=(self.username, self.password))
         
         return raw_response

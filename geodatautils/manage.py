@@ -4,13 +4,13 @@ Manage Solr instance by updating the index.
 """
 
 
-__version__ = 2.0
+__version__ = 3.0
 
 
 import logging
 
 from geodatautils import config
-from .helpers import create_file_list, open_json, Record
+from .helpers import create_file_list, open_json, RecordSet
 from .logging_config import LogFormat
 from .solr import Solr
 from . import schema
@@ -22,8 +22,8 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
     # Initialize error tracker, tracks if any errors have been found. If so, program will stop before pushing to solr
     errors = False
 
-    # Initialize records store, store records so they can be uploaded at the end
-    records = []
+    # Initialize records store
+    record_set = RecordSet()
 
     # Initialize solr instance
     solr = Solr(solr_instance_name)
@@ -43,16 +43,19 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         # Open the file
         data = open_json(filepath)
 
-        # Add record to records
-        records.append(Record(data, filepath=filepath))
+        # Add record to record set
+        record_set.add_record(data, filepath)
 
     # Validate schema of records
     logging.info("Validating schema of {} documents.".format(len(file_list)))
-    errors = schema.validate(records, metadata_schema) or errors
+    errors = schema.validate(record_set, metadata_schema) or errors
 
     # Check for errors in records
     logging.info("Checking {} documents for errors.".format(len(file_list)))
-    errors = schema.error_check(records, solr) or errors
+    errors = schema.error_check(record_set, solr) or errors
+
+    # Log errors and warnings
+    record_set.log_errors_and_warnings(indent=1)
 
     # Upload records if no errors
     if not errors:
@@ -70,15 +73,13 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
             logging.info("Uploading {} document{} to {}.".format(len(file_list), ("" if len(file_list)==1 else "s"), solr_instance_name))
 
         # Log file names that will be uploaded
-        for file_name in file_list:
-            
-            # Log the file path
-            logging.debug(file_name, extra={'indent': LogFormat.indent(1)})
+        for record in record_set.records.values():
+            record.log_record(level='debug', indent=2)
 
         # Update solr index
         """Note: there is a risk of a time-of-check time-of-use (TOCTOU) error with this code
         structure because we check Solr for duplicates and later upload."""
-        data = list(map(lambda record: record.data, records))
+        data = str(list(map(lambda record: record.data, record_set.records.values()))).encode()
         raw_response = solr.update(data)
 
         # Raise any errors

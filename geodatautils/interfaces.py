@@ -74,7 +74,7 @@ def update_solr():
         action='store_true',
         help="Delete the entire Solr index.")
 
-    # Optoinal arguments
+    # Optional arguments
     parser.add_argument(
         "-r", "--recursive",
         action='store_true',
