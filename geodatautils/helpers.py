@@ -159,4 +159,10 @@ def open_json(file_path:str) -> dict:
     """Given a file path to a JSON file, return the JSON loaded into a dictionary."""
 
     with open(file_path, encoding="utf8") as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except json.decoder.JSONDecodeError as e:
+            logging.critical("Could not decode JSON: {}".format(file_path))
+            logging.debug(e)
+            logging.info("Exiting; see log for debug.")
+            raise SystemExit
