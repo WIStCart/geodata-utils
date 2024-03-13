@@ -18,7 +18,7 @@ from .logging_config import LogFormat
 from .solr import Solr
 
 
-def empty_missing(data:dict, fields:Union[str, list]) -> str:
+def empty_missing(data:dict, fields:Union[str, list]) -> Union[str, None]:
     """Check if a required fields are present in geoblacklight JSON.
 
     Arguments:
@@ -36,7 +36,7 @@ def empty_missing(data:dict, fields:Union[str, list]) -> str:
     # Check each field to see if it is empty or missing
     for field in fields:
         try:
-            if data[field] == "":
+            if data[field] in ["", [], [""]]:
                 return "empty"
         
         except KeyError:
@@ -79,11 +79,13 @@ def error_check(record_set:RecordSet, solr:Solr) -> bool:
                     # Compose message
                     if error == "empty":
                         msg = "'{}' is empty".format(field)
+                        debug = "{}: {} (\"\", [], and [\"\"] are considered empty)".format(field, data[field])
                     elif error == "missing":
                         msg = "Required field '{}' was not found.".format(field)
+                        debug = None
 
                     # Add error to record
-                    record.add_error('properties-not-null', msg, None)        
+                    record.add_error('properties-not-null', msg, debug)        
 
         # Check that dc_identifier_s and layer_slug_s match
         error_check_name = 'identifier-layer-slug-match'
