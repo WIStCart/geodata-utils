@@ -4,9 +4,6 @@ Manage Solr instance by updating the index.
 """
 
 
-__version__ = 3.0
-
-
 import logging
 
 from geodatautils import config
