@@ -7,7 +7,7 @@ Command line interfaces for Geodata utilites.
 import argparse
 import logging
 
-from geodatautils import config
+from geodatautils import config, __version__
 from . import config_tools
 from . import manage
 
@@ -81,7 +81,7 @@ def update_solr():
         help="[Deprecated] Recurse into subfolders when adding JSON files.")
 
     # Print version
-    parser.add_argument("--version", action="version", version="%(prog)s - Version {}".format(manage.__version__))
+    parser.add_argument("--version", action="version", version="Geodata Utils - Version {}".format(__version__))
 
     # Parse arguments
     args = parser.parse_args()
