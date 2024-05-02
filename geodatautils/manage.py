@@ -43,6 +43,19 @@ def add(in_path:str, solr_instance_name:str, confirm_action:bool=False, metadata
         # Open the file
         data = open_json(filepath)
 
+        # Check if record UID already exists in record set
+        if data['dc_identifier_s'] in record_set.records.keys():
+
+            # Add error to record
+            msg = "Another input file has the same UID and could not be opened."
+            debug = "'{}'".format(filepath)
+            record_set.records[data['dc_identifier_s']].add_error('uid-collision', msg, debug)
+
+            errors = True
+
+            # Skip adding record to set
+            continue
+
         # Add record to record set
         record_set.add_record(data, filepath)
 
