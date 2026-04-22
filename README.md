@@ -3,7 +3,7 @@
 Utilities for managing GeoData@Wisconsin.
 
 
-## Manange Installation
+## Manage Installation
 
 See [Manage Geodata Utilities Installation](docs/manage-installation.md) for information on installing, updating, and uninstalling Geodata Utils and virtual environments.
 
