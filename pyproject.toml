@@ -25,6 +25,7 @@ dynamic = ["version"]
 [project.scripts]
 update_solr = "geodatautils.interfaces:update_solr"
 gu_config = "geodatautils.interfaces:gu_config"
+indexed = "geodatautils.interfaces:indexed"
 
 [tool.setuptools.packages.find]
 where = ['.']

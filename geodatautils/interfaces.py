@@ -10,6 +10,7 @@ import logging
 from geodatautils import config, __version__
 from . import config_tools
 from . import manage
+from . import indextools
 
 
 def gu_config():
@@ -106,3 +107,52 @@ def update_solr():
         manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance), confirm_action=True)
     else:  # This shouldn't happen
         print("No tool selected")
+
+def indexed():
+    """Manage Indexed Datasets
+    
+    Tools for indexed datasets used in geodata@wisc.
+    """
+
+    def check_urls(args):
+        indextools.check_urls(args.searchPath, args.verbose)
+
+    # Create argument parser
+    parser = argparse.ArgumentParser(prog='indexed')
+    subparsers = parser.add_subparsers(title="subcommands",
+                                       description="This program uses several subcommands. Use the help for each for more information.")
+
+    # Coordinate precision subparser
+    parser_p = subparsers.add_parser(
+        "coordinate-precision", aliases=['p'],
+        help="Read indexed dataset GeoJSON, reduce coordinate precision, and output to specified directory.")
+
+    # Check URLs subparser
+    parser_cu = subparsers.add_parser(
+        "check-urls", aliases=['cu'],
+        help="Check URLs in GeoJSON of indexed datasets to confirm they resolve.")
+    parser_cu.add_argument("searchPath", help="Path to geojson or geojsons.")
+    parser_cu.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_cu.set_defaults(func=check_urls)
+
+    # Minify GeoJSON subparser
+    parser_m = subparsers.add_parser(
+        "minify-geojson", aliases=['m'],
+        help="Minify geojson to have no return/new lines and no indentation. Optionally choose an indentation level.")
+
+    # Update URL subparser
+    parser_uu = subparsers.add_parser(
+        "update-url", aliases=['uu'],
+        help="Update websiteUrl of geojson to specified new URL.")
+
+    # Remove missing tiles subparser
+    parser_rt = subparsers.add_parser(
+        "remove-missing-tiles", aliases=['rt'],
+        help="Remove tiles from index geojson where downloadUrl returns 404.")
+
+    # Print version
+    parser.add_argument("--version", action="version", version="Geodata Utils - Version {}".format(__version__))
+
+    # Parse arguments
+    args = parser.parse_args()
+    args.func(args)
