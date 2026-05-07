@@ -117,6 +117,9 @@ def indexed():
     def check_urls(args):
         indextools.check_urls(args.searchPath, args.verbose)
 
+    def coordinate_precision(args):
+        indextools.coordinate_precision(args.inPath, args.outPath, args.precision, args.indentation, args.skip, args.verbose)
+
     # Create argument parser
     parser = argparse.ArgumentParser(prog='indexed')
     subparsers = parser.add_subparsers(title="subcommands",
@@ -126,6 +129,15 @@ def indexed():
     parser_p = subparsers.add_parser(
         "coordinate-precision", aliases=['p'],
         help="Read indexed dataset GeoJSON, reduce coordinate precision, and output to specified directory.")
+    parser_p.add_argument("inPath", help="Path to geojson or geojsons.")
+    parser_p.add_argument("outPath", help="Output path to place updated geojsons.")
+    parser_p.add_argument("-p", "--precision", type=int, dest="precision", help="How many digits after the decimial. (default=4)")
+    parser_p.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    parser_p.add_argument("-s", "--skip-feature", action='store_true', dest="skip", help="Gracefully skip feature instead of entire dataset if there is an unsupported geometry type.")
+    parser_p.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_p.set_defaults(func=coordinate_precision)
+
+
 
     # Check URLs subparser
     parser_cu = subparsers.add_parser(

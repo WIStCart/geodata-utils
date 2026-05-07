@@ -68,16 +68,15 @@ def coordinate_precision(in_path:str, out_path:str, precision:int, indentation:i
 
                 # If flag to skip only feature is used
                 if skip_feature:
-                    logging.warning("{} feature {}: Feature type {} is not supported. Skipping!".format(os.path.basename(dataset), data['features'].index(feature), feature['geometry']['type']))
+                    logging.warning(f"{os.path.basename(dataset)} feature {data['features'].index(feature)}: Feature type {feature['geometry']['type']} is not supported. Skipping!")
 
                 # Else skip entire dataset
                 else:
-                    logging.warning("{} feature {}: Feature type {} is not supported. Skipping Dataset!".format(os.path.basename(dataset), data['features'].index(feature), feature['geometry']['type']))
+                    logging.warning(f"{os.path.basename(dataset)} feature {data['features'].index(feature)}: Feature type {feature['geometry']['type']} is not supported. Skipping Dataset!")
                     return
 
-            # Log dataset if verbose flag used
-        if verbose:
-            logging.info("Updated precision of {} to {}.".format(os.path.basename(dataset), precision))
+        # Log dataset
+        logging.debug(f"Updated precision of {os.path.basename(dataset)} to {precision}.")
 
         # Write updated json to file
         with open(os.path.join(out_path, os.path.basename(dataset)), 'w') as f:
@@ -86,8 +85,10 @@ def coordinate_precision(in_path:str, out_path:str, precision:int, indentation:i
         return
 
     # Start log
-    log = logger('coordinate_precision.log')
-    log.start()
+    logging.info(f"Reducing coordinate precision of datasets in {in_path}")
+
+    if verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
 
     # Datasets to process
     datasets = get_datasets_list(in_path)
@@ -97,23 +98,22 @@ def coordinate_precision(in_path:str, out_path:str, precision:int, indentation:i
 
         # If it does not yet exist, make it
         os.mkdir(out_path)
-        logging.info("Making {}.".format(out_path))
+        logging.info(f"Creating directory: {out_path}.")
 
 
     for dataset in datasets:
         reduce_precision(dataset)
     
-    # End log
-    log.end()
+    logging.info("Process complete.")
 
 def check_urls(search_path:str, verbose:bool=False) -> None:
     """Check URLs in GeoJSON of indexed datasets to confirm they resolve."""
     
     # Start log
     logging.info(f"Checking URLs in {search_path}")
+
     if verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-        # logging.getLogger()..setLevel(level=logging.DEBUG)
 
     # Datasets to check
     datasets = get_datasets_list(search_path)
