@@ -120,6 +120,9 @@ def indexed():
     def coordinate_precision(args):
         indextools.coordinate_precision(args.inPath, args.outPath, args.precision, args.indentation, args.skip, args.verbose)
 
+    def minify_geojson(args):
+        indextools.minify_geojson(args.path, args.indentation)
+
     # Create argument parser
     parser = argparse.ArgumentParser(prog='indexed')
     subparsers = parser.add_subparsers(title="subcommands",
@@ -137,8 +140,6 @@ def indexed():
     parser_p.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
     parser_p.set_defaults(func=coordinate_precision)
 
-
-
     # Check URLs subparser
     parser_cu = subparsers.add_parser(
         "check-urls", aliases=['cu'],
@@ -151,6 +152,10 @@ def indexed():
     parser_m = subparsers.add_parser(
         "minify-geojson", aliases=['m'],
         help="Minify geojson to have no return/new lines and no indentation. Optionally choose an indentation level.")
+    parser_m.add_argument("path", help="Path to geojson or geojsons.")
+    parser_m.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    parser_m.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_m.set_defaults(func=minify_geojson)
 
     # Update URL subparser
     parser_uu = subparsers.add_parser(
