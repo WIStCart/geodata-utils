@@ -201,8 +201,7 @@ def remove_missing_tiles(in_path:str, out_path:str, indentation:int) -> None:
     from copy import deepcopy
 
     # Start log
-    log = logger('remove_missing_tiles_{}.log'.format(datetime.datetime.now().strftime('%Y-%m-%d_%H%M')))
-    log.start()
+    logging.info(f"Remove missing tiles in {in_path}")
 
     # Datasets to process
     datasets = get_datasets_list(in_path)
@@ -218,7 +217,6 @@ def remove_missing_tiles(in_path:str, out_path:str, indentation:int) -> None:
         temp_data = deepcopy(data)
         
         logging.info(f"Processing {os.path.basename(dataset)}...")
-        print(f"Processing {os.path.basename(dataset)}...")
         
         # Create a session for this check.  This seems to avoid creating security/DDOS concerns 
         # by re-using the same connection.
@@ -236,17 +234,14 @@ def remove_missing_tiles(in_path:str, out_path:str, indentation:int) -> None:
                 if response.status_code == 404:
                     temp_data['features'].remove(feature)
                     logging.info(f"{url} >>> Tile removed from GeoJSON index.")
-                    print(f"{url} >>> Tile removed from GeoJSON index.")
             except requests.RequestException as e:
                 # exception will be thrown if the server can't be reached
-                print(f"Error connecting to server {urlparse(url).netloc}")
-                logging.info(f"Error connecting to server {urlparse(url).netloc}")
+                logging.error(f"Error connecting to server {urlparse(url).netloc}. Did not remove, check manually.")
          
         session.close()
             
         # Save updated index geojson to file
         with open(os.path.join(out_path, os.path.basename(dataset)), 'w') as f:
             json.dump(temp_data, f, indent=indentation)
-    
-    # End log
-    log.end()
+
+    logging.info("Removal of missing tiles complete.")

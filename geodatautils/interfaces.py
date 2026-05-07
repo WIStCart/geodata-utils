@@ -126,6 +126,9 @@ def indexed():
     def update_url(args):
         indextools.update_url(args.path, args.newUrl)
 
+    def remove_missing_tiles(args):
+        indextools.remove_missing_tiles(args.inPath, args.outPath, args.indentation)
+
     # Create argument parser
     parser = argparse.ArgumentParser(prog='indexed')
     subparsers = parser.add_subparsers(title="subcommands",
@@ -172,6 +175,11 @@ def indexed():
     parser_rt = subparsers.add_parser(
         "remove-missing-tiles", aliases=['rt'],
         help="Remove tiles from index geojson where downloadUrl returns 404.")
+    parser_rt.add_argument("inPath", help="Path to geojson or geojsons.")
+    parser_rt.add_argument("outPath", help="Output path to place updated geojsons.")
+    parser_rt.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    # parser_rt.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_rt.set_defaults(func=remove_missing_tiles)
 
     # Print version
     parser.add_argument("--version", action="version", version="Geodata Utils - Version {}".format(__version__))
