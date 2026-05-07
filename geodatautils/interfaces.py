@@ -123,6 +123,9 @@ def indexed():
     def minify_geojson(args):
         indextools.minify_geojson(args.path, args.indentation)
 
+    def update_url(args):
+        indextools.update_url(args.path, args.newUrl)
+
     # Create argument parser
     parser = argparse.ArgumentParser(prog='indexed')
     subparsers = parser.add_subparsers(title="subcommands",
@@ -161,6 +164,9 @@ def indexed():
     parser_uu = subparsers.add_parser(
         "update-url", aliases=['uu'],
         help="Update websiteUrl of geojson to specified new URL.")
+    parser_uu.add_argument("path", help="Path to geojson or geojsons.")
+    parser_uu.add_argument("newUrl", type=str, help="The new websiteUrl.")
+    parser_uu.set_defaults(func=update_url)
 
     # Remove missing tiles subparser
     parser_rt = subparsers.add_parser(
