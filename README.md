@@ -2,13 +2,11 @@
 
 Utilities for managing GeoData@Wisconsin.
 
+## Manage
 
-## Manange Installation
+### Manage Installation
 
 See [Manage Geodata Utilities Installation](docs/manage-installation.md) for information on installing, updating, and uninstalling Geodata Utils and virtual environments.
-
-
-## Usage
 
 ### Reopen Environment
 
@@ -22,9 +20,9 @@ activate geodata-utils
 
 See [Configure Geodata Utilities](docs/config.md) to learn about configuring your install. You can configure Solr connections, what error checks are run, logging, and metadata schemas. 
 
-### Tools
+## Tools
 
-#### `update_solr`
+### `update_solr`
 
 ```text
 update_solr [-h] -i INSTANCE (-a ADD | -d DELETE | -dc DELETE_COLLECTION | -dp DELETE_PROVENANCE | -p) 
@@ -67,7 +65,7 @@ update_solr -i test -dp "Some Agency"
 update_solr -i test -p
 ```
 
-#### `gu_config`
+### `gu_config`
 
 ```text
 gu_config [-h] (-e | -i)
@@ -85,4 +83,28 @@ gu_config -e
 
 # Initialize config file (use copy of template)
 gu_config --init
+```
+
+### Indexed Datasets
+
+See the [Indexed Datasets doc](docs/indexed-datasets.md) for details on subcommands.
+
+```text
+indexed [-h] [--version]
+               {coordinate-precision,p,check-urls,cu,minify-geojson,m,update-url,uu,remove-missing-tiles,rt} ...
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+
+subcommands:
+  This program uses several subcommands. Use the help for each for more information.
+
+    coordinate-precision (p)
+                        Read indexed dataset GeoJSON, reduce coordinate precision, and output to specified directory.
+    check-urls (cu)     Check URLs in GeoJSON of indexed datasets to confirm they resolve.
+    minify-geojson (m)  Minify geojson to have no return/new lines and no indentation. Optionally choose an indentation level.
+    update-url (uu)     Update websiteUrl of geojson to specified new URL.
+    remove-missing-tiles (rt)
+                        Remove tiles from index geojson where downloadUrl returns 404.
 ```

@@ -10,6 +10,7 @@ import logging
 from geodatautils import config, __version__
 from . import config_tools
 from . import manage
+from . import indextools
 
 
 def gu_config():
@@ -106,3 +107,83 @@ def update_solr():
         manage.delete(solr_instance_name=args.instance, query='dct_provenance_s:"{}"'.format(args.delete_provenance), confirm_action=True)
     else:  # This shouldn't happen
         print("No tool selected")
+
+def indexed():
+    """Manage Indexed Datasets
+    
+    Tools for indexed datasets used in geodata@wisc.
+    """
+
+    def check_urls(args):
+        indextools.check_urls(args.searchPath, args.verbose)
+
+    def coordinate_precision(args):
+        indextools.coordinate_precision(args.inPath, args.outPath, args.precision, args.indentation, args.skip, args.verbose)
+
+    def minify_geojson(args):
+        indextools.minify_geojson(args.path, args.indentation)
+
+    def update_url(args):
+        indextools.update_url(args.path, args.newUrl)
+
+    def remove_missing_tiles(args):
+        indextools.remove_missing_tiles(args.inPath, args.outPath, args.indentation)
+
+    # Create argument parser
+    parser = argparse.ArgumentParser(prog='indexed')
+    subparsers = parser.add_subparsers(title="subcommands",
+                                       description="This program uses several subcommands. Use the help for each for more information.")
+
+    # Coordinate precision subparser
+    parser_p = subparsers.add_parser(
+        "coordinate-precision", aliases=['p'],
+        help="Read indexed dataset GeoJSON, reduce coordinate precision, and output to specified directory.")
+    parser_p.add_argument("inPath", help="Path to geojson or geojsons.")
+    parser_p.add_argument("outPath", help="Output path to place updated geojsons.")
+    parser_p.add_argument("-p", "--precision", type=int, dest="precision", help="How many digits after the decimial. (default=4)")
+    parser_p.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    parser_p.add_argument("-s", "--skip-feature", action='store_true', dest="skip", help="Gracefully skip feature instead of entire dataset if there is an unsupported geometry type.")
+    parser_p.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_p.set_defaults(func=coordinate_precision)
+
+    # Check URLs subparser
+    parser_cu = subparsers.add_parser(
+        "check-urls", aliases=['cu'],
+        help="Check URLs in GeoJSON of indexed datasets to confirm they resolve.")
+    parser_cu.add_argument("searchPath", help="Path to geojson or geojsons.")
+    parser_cu.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_cu.set_defaults(func=check_urls)
+
+    # Minify GeoJSON subparser
+    parser_m = subparsers.add_parser(
+        "minify-geojson", aliases=['m'],
+        help="Minify geojson to have no return/new lines and no indentation. Optionally choose an indentation level.")
+    parser_m.add_argument("path", help="Path to geojson or geojsons.")
+    parser_m.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    parser_m.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_m.set_defaults(func=minify_geojson)
+
+    # Update URL subparser
+    parser_uu = subparsers.add_parser(
+        "update-url", aliases=['uu'],
+        help="Update websiteUrl of geojson to specified new URL.")
+    parser_uu.add_argument("path", help="Path to geojson or geojsons.")
+    parser_uu.add_argument("newUrl", type=str, help="The new websiteUrl.")
+    parser_uu.set_defaults(func=update_url)
+
+    # Remove missing tiles subparser
+    parser_rt = subparsers.add_parser(
+        "remove-missing-tiles", aliases=['rt'],
+        help="Remove tiles from index geojson where downloadUrl returns 404.")
+    parser_rt.add_argument("inPath", help="Path to geojson or geojsons.")
+    parser_rt.add_argument("outPath", help="Output path to place updated geojsons.")
+    parser_rt.add_argument("-i", "--indentation", type=int, dest="indentation", help="Indent level. (default=None)")
+    # parser_rt.add_argument("-v", "--verbose", action='store_true', dest="verbose", help="Write successful responses to log.")
+    parser_rt.set_defaults(func=remove_missing_tiles)
+
+    # Print version
+    parser.add_argument("--version", action="version", version="Geodata Utils - Version {}".format(__version__))
+
+    # Parse arguments
+    args = parser.parse_args()
+    args.func(args)
