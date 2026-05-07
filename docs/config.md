@@ -43,7 +43,7 @@ The other error checks are turned on or off using `true` or `false` respectively
 
 The entire logging config is contained in the `log` section. See the [python `logging` library documentation](https://docs.python.org/3/library/logging.config.html) for detailed information on configuration of the `logging` library. But for use here, you most likely will only be interested in changing the logging level.
 
-To change the logging level look under `handlers` and find `console` or `file`. `console` is the config used for logging to your console and `file` is the config used for logging to `gedatautils.log`. Below is an example of the `handlers`.
+To change the logging level look under `handlers` and find `console` or `file`. `console` is the config used for logging to your console and `file` is the config used for logging to `geodatautils.log`. Below is an example of the `handlers`.
 
 ```yaml
 handlers:
